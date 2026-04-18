@@ -1,0 +1,41 @@
+<div class="counter-page">
+  <div class="counter-card">
+    <h2>Counter App</h2>
+    <p class="subtitle">Built with BehaviorSubject (Day 2)</p>
+
+    <div
+      class="count-display"
+      [class.positive]="isPositive$ | async"
+      [class.negative]="!(isPositive$ | async)"
+    >
+      {{ count$ | async }}
+    </div>
+
+    <div class="controls">
+      <button class="btn increment" (click)="increment()">+ Increment</button>
+      <button class="btn reset" (click)="reset()">↺ Reset</button>
+      <button class="btn decrement" (click)="decrement()">- Decrement</button>
+    </div>
+
+    <div class="controls">
+      <button class="btn increment" (click)="incrementBy(5)">+ 5</button>
+      <button class="btn decrement" (click)="decrementBy(5)">- 5</button>
+      <button class="btn increment" (click)="incrementBy(10)">+ 10</button>
+      <button class="btn decrement" (click)="decrementBy(10)">- 10</button>
+    </div>
+
+    @if (summary$ | async; as summary) {
+      <div class="summary">
+        <p class="status">
+          Status: <strong>{{ summary.status | uppercase }}</strong>
+        </p>
+        <p>
+          Absolute Value: <strong>{{ summary.count | number }}</strong>
+        </p>
+        @if (summary.lastUpdated) {
+          Last Updated: <strong>{{ summary.lastUpdated | date: 'medium' }}</strong>
+        }
+      </div>
+    }
+  </div>
+</div>

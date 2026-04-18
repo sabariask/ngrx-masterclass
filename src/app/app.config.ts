@@ -6,14 +6,17 @@ import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { provideHttpClient } from '@angular/common/http';
+import { counterReducer } from './state/counter/counter.reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideStore(),
-    provideEffects(),
-    provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
+    provideStore({
+      counter: counterReducer
+    }),
+    provideEffects([]),
+    provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode(), autoPause: true, trace: false }),
     provideHttpClient(),
     provideZoneChangeDetection({ eventCoalescing: true })
   ]

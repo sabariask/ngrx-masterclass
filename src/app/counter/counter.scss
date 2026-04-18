@@ -1,0 +1,97 @@
+.counter-page {
+  display: flex;
+  justify-content: center;
+  padding-top: 3rem;
+}
+
+.counter-card {
+  background: white;
+  border-radius: 20px;
+  padding: 2.5rem 3rem;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  min-width: 320px;
+
+  h2 {
+    font-size: 1.5rem;
+    color: #1a1a2e;
+    margin-bottom: 0.3rem;
+  }
+
+  .subtitle {
+    color: #aaa;
+    font-size: 0.85rem;
+    margin-bottom: 2rem;
+  }
+}
+
+.count-display {
+  font-size: 5rem;
+  font-weight: 900;
+  margin: 1.5rem 0;
+  transition: color 0.3s;
+
+  &.positive {
+    color: #4caf50;
+  }
+
+  &.negative {
+    color: #e94560;
+  }
+}
+
+.controls {
+  display: flex;
+  gap: 0.8rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+
+  .btn {
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      transform: translate(-2px);
+    }
+
+    &:active {
+      transform: translate(0);
+    }
+
+    &.increment {
+      background: #4caf50;
+      color: white;
+    }
+
+    &.decrement {
+      background: #e94560;
+      color: white;
+    }
+
+    &.reset {
+      background: #607d8b;
+      color: white;
+    }
+  }
+}
+
+.summary {
+  .status {
+    font-size: 0.95rem;
+    color: #555;
+
+    .green {
+      color: #4caf50;
+      font-weight: 600;
+    }
+
+    .red {
+      color: #e94560;
+      font-weight: 600;
+    }
+  }
+}
