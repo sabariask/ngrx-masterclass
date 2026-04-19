@@ -7,13 +7,17 @@ import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { provideHttpClient } from '@angular/common/http';
 import { counterReducer } from './state/counter/counter.reducer';
+import { todoReducer } from './state/todos/todo.reducer';
+import { authReducer } from './state/auth/auth.reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideStore({
-      counter: counterReducer
+      counter: counterReducer,
+      todos: todoReducer,
+      auth: authReducer
     }),
     provideEffects([]),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode(), autoPause: true, trace: false }),

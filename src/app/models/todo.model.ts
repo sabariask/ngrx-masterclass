@@ -8,3 +8,9 @@ export interface Todo {
     userId: number;
     dueDate?: string | null;
 }
+
+export interface FeatureState {
+    data: any[];
+    loading: boolean;
+    error: string | null;
+}
