@@ -17,6 +17,10 @@ export const routes: Routes = [
         component: Counter
     },
     {
+        path: 'todos',
+        loadComponent: () => import('./todos/todo-list/todo-list').then(m => m.TodoList)
+    },
+    {
         path: "**",
         redirectTo: 'dashboard'
     }

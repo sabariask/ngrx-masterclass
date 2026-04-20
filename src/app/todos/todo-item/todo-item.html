@@ -1,0 +1,36 @@
+<div class="todo-item" [class.completed]="todo.completed">
+  <div class="priority-bar priority-{{ todo.priority }}"></div>
+
+  <div class="todo-body">
+    <div class="todo-header">
+      <h4 [class.strikethrough]="todo.completed">
+        {{ todo.title }}
+      </h4>
+      <span class="priority-tag priority-{{ todo.priority }}">
+        {{ todo.priority }}
+      </span>
+    </div>
+
+    @if (todo.description) {
+      <p class="description">
+        {{ todo.description }}
+      </p>
+    }
+
+    @if (todo.dueDate) {
+      <small class="due-date">📅 Due: {{ todo.dueDate }}</small>
+    }
+  </div>
+
+  <div class="todo-actions">
+    <button
+      class="btn-toggle"
+      (click)="toggle()"
+      [title]="todo.completed ? 'Mark Pending' : 'Mark Complete'"
+    >
+      {{ todo.completed ? '↩️' : '✅' }}
+    </button>
+
+    <button class="btn-delete" (click)="delete()" title="delete">🗑️</button>
+  </div>
+</div>

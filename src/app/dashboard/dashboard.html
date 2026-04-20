@@ -1,73 +1,112 @@
 <div class="dashboard">
-  @if (isLoading) {
-    <div class="loading-state">
-      <div class="spinner"></div>
-      <p>⏳ Loading dashboard...</p>
-    </div>
-  }
-
-  @if (errorMessage) {
-    <div class="error-state">❌ {{ errorMessage }}</div>
-  }
-
-  @if (user) {
-    <div class="user-card">
-      <img [src]="user.avatarUrl" [alt]="user.name" />
-      <div class="user-info">
-        <h2>{{ user.name }}</h2>
-        <p>{{ user.email }}</p>
-        <span class="badge role-{{ user.role }}">{{ user.role | uppercase }}</span>
+  @if (vm$ | async; as vm) {
+    <div class="greeting-card">
+      <div class="greeting-text">
+        <h1>{{ vm.greeting }}</h1>
+        <p>Here's your productivity</p>
       </div>
-    </div>
-  }
-
-  <div class="stats-row">
-    <div class="stat-card">
-      <span class="stat-number">{{ todos.length }}</span>
-      <span class="stat-label">Total</span>
-    </div>
-    <div class="stat-card success">
-      <span class="stat-number">{{ completedTodos.length }}</span>
-      <span class="stat-label">Completed</span>
-    </div>
-    <div class="stat-card warning">
-      <span class="stat-number">{{ pendingTodos.length }}</span>
-      <span class="stat-label">Pending</span>
-    </div>
-    <div class="stat-card danger">
-      <span class="stat-number">{{ highPriorityTodos.length }}</span>
-      <span class="stat-label">High Priority</span>
-    </div>
-  </div>
-
-  <div class="todo-section">
-    <h3>📝 My Todos</h3>
-
-    @if (todos.length == 0 && !isLoading) {
-      <p class="empty">No tasks found.</p>
-    }
-
-    <div class="todo-list">
-      @for (todo of todos; track todo.id) {
-        <div class="todo-card" [class.completed]="todo.completed">
-          <div class="priority-indicator priority-{{ todo.priority }}"></div>
-          <div class="todo-content">
-            <h4 [class.strikethrough]="todo.completed">{{ todo.title }}</h4>
-            @if (todo.description) {
-              <p>{{ todo.description }}</p>
-            }
-            @if (todo.dueDate) {
-              <small>Due: {{ todo.dueDate }}</small>
-            }
-          </div>
-          <div class="todo-meta">
-            <span class="priority-badge priority-{{ todo.priority }}"></span>
-            <span class="status-icon">
-              {{ todo.completed ? '✅' : '⏳' }}
-            </span>
-          </div>
-        </div>
+      @if (vm.isAdmin) {
+        <span class="admin-badge">Admin</span>
       }
     </div>
-  </div>
+
+    @if (vm.loading) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>⏳ Loading Dashboard....</p>
+      </div>
+    }
+
+    @if (vm.user) {
+      <div class="user-card">
+        @if (vm.user.avatarUrl) {
+          <img [src]="vm.user.avatarUrl" [alt]="vm.user.name" class="avatar" />
+        } @else {
+          <div class="avatar-placeholder">
+            {{ vm.user.name.charAt(0).toUpperCase() }}
+          </div>
+        }
+        <div class="user-info">
+          <h2>{{ vm.user.name }}</h2>
+          <p>{{ vm.user.email }}</p>
+          <span class="badge role-{{ vm.user.role }}">
+            {{ vm.user.role | uppercase }}
+          </span>
+        </div>
+      </div>
+    }
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <span class="stat-icon">📋</span>
+        <span class="stat-number">{{ vm.counts.total }}</span>
+        <span class="stat-label">Total</span>
+      </div>
+
+      <div class="stat-card success">
+        <span class="stat-icon">✅</span>
+        <span class="stat-number">{{ vm.counts.completed }}</span>
+        <span class="stat-label">Completed</span>
+      </div>
+
+      <div class="stat-card warning">
+        <span class="stat-icon">⏳</span>
+        <span class="stat-number">{{ vm.counts.pending }}</span>
+        <span class="stat-label">Pending</span>
+      </div>
+
+      <div class="stat-card danger">
+        <span class="stat-icon">🔴</span>
+        <span class="stat-number">{{ vm.counts.high }}</span>
+        <span class="stat-label">High Priority</span>
+      </div>
+    </div>
+
+    <div class="progress-card">
+      <div class="progress-header">
+        <h3>📈 Completion Rate</h3>
+        <span class="progress-percent">{{ vm.completionRate }}%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-full" [style.width.%]="vm.completionRate"></div>
+      </div>
+      <small>{{ vm.counts.completed }} of {{ vm.counts.total }} tasks done</small>
+    </div>
+
+    <div class="todo-selection">
+      <h3>📝 My Tasks</h3>
+      @if (vm.counts.total === 0 && !vm.loading) {
+        <p class="empty">No tasks found. Go add some!</p>
+      }
+      <div class="todo-list">
+        @for (todo of vm.highPriorityTodos; track todo.id) {
+          <div class="todo-card" [class.completed]="todo.completed">
+            <div class="priority-indicator priority-{{ todo.priority }}"></div>
+            <div class="todo-content">
+              <h4 [class.strikethrough]="todo.completed">
+                {{ todo.title }}
+              </h4>
+              @if (todo.description) {
+                <p>{{ todo.description }}</p>
+              }
+              @if (todo.dueDate) {
+                <small>📅 Due: {{ todo.dueDate }}</small>
+              }
+            </div>
+
+            <div class="todo-meta">
+              <span class="priority-badge priority-{{ todo.priority }}">
+                {{ todo.priority }}
+              </span>
+              <span class="status-icon">
+                {{ todo.completed ? '✅' : '⏳' }}
+              </span>
+            </div>
+          </div>
+        }
+      </div>
+
+      <a routerLink="/todos" class="view-all-link"> View All Todos -> </a>
+    </div>
+  }
 </div>

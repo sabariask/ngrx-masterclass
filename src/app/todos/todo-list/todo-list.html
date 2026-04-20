@@ -1,0 +1,76 @@
+<div class="todo-page">
+  <div class="page-header">
+    <h2>📝 My Todos</h2>
+    <button class="btn-clear" (click)="clearAll()">🗑 Clear All</button>
+  </div>
+
+  @if (count$ | async; as counts) {
+    <div class="stats-row">
+      <div class="stat" (click)="setFilter('all')" [class.active]="filterType === 'all'">
+        <span>{{ counts.total }}</span>
+        <label for="all">All</label>
+      </div>
+      <div class="stat" (click)="setFilter('pending')" [class.active]="filterType === 'pending'">
+        <span>{{ counts.pending }}</span>
+        <label for="pending">Pending</label>
+      </div>
+      <div
+        class="stat"
+        (click)="setFilter('completed')"
+        [class.active]="filterType === 'completed'"
+      >
+        <span>{{ counts.completed }}</span>
+        <label for="completed">Completed</label>
+      </div>
+      <div class="stat danger" (click)="setFilter('high')" [class.active]="filterType === 'high'">
+        <span>{{ counts.high }}</span>
+        <label for="high priority">High Priority</label>
+      </div>
+    </div>
+  }
+
+  <div class="add-form">
+    <input
+      type="text"
+      placeholder="Add a new task...."
+      [(ngModel)]="newTitle"
+      (keyup.enter)="addTodo()"
+      class="input-title"
+    />
+    <select [(ngModel)]="newPriority" class="select-priority">
+      <option value="low">🟢 Low</option>
+      <option value="medium">🟠 Medium</option>
+      <option value="high">🔴 High</option>
+    </select>
+    <button class="btn-add" (click)="addTodo()">+ Add</button>
+  </div>
+
+  @if ((loading$ | async) && !(todos$ | async)?.length) {
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Loading todos....</p>
+    </div>
+  }
+  @if (error$ | async; as error) {
+    <div class="error">❌ {{ error }}</div>
+  }
+
+  @if (todos$ | async; as todos) {
+    @if (todos.length === 0) {
+      <div class="empty-state">
+        <p>🎉No tasks here!</p>
+        <small>Add a task above to get started</small>
+      </div>
+    } @else {
+      <div class="todo-list">
+        @for (todo of todos; track todo.id) {
+          <app-todo-item
+            [todo]="todo"
+            (onToggle)="toggleTodo($event)"
+            (onDelete)="deleteTodo($event)"
+          />
+        }
+      </div>
+    }
+  }
+</div>
