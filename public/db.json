@@ -36,7 +36,7 @@
       "id": 1,
       "name": "Sana",
       "email": "sana@example.com",
-      "role": "Admin",
+      "role": "admin",
       "avatarUrl": "https://i.pravatar.cc/100?img=5",
       "createdAt": "2024-01-01"
     }
