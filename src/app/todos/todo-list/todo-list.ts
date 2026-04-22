@@ -24,6 +24,7 @@ export class TodoList implements OnInit {
 
   newTitle = '';
   newPriority: 'low' | 'medium' | 'high' = 'medium';
+  newDescription = '';
   filterType = 'all';
 
   store = inject(Store<AppState>);
@@ -44,7 +45,8 @@ export class TodoList implements OnInit {
 
     this.store.dispatch(TodoActions.addTodo({
       title: this.newTitle.trim(),
-      priority: this.newPriority
+      priority: this.newPriority,
+      description: this.newDescription
     }));
 
     this.newTitle = '';

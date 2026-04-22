@@ -30,11 +30,12 @@ export class TodoEffects {
   addTodo$ = createEffect(() =>
     this.actions$.pipe(
       ofType(TodoActions.addTodo),
-      mergeMap(({ title, priority }) =>
+      mergeMap(({ title, priority, description }) =>
         this.todoService
           .addTodo({
             title,
             priority,
+            description,
             completed: false,
             userId: 1,
           })

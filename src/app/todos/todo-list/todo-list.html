@@ -32,8 +32,15 @@
   <div class="add-form">
     <input
       type="text"
-      placeholder="Add a new task...."
+      placeholder="Add a new task title...."
       [(ngModel)]="newTitle"
+      (keyup.enter)="addTodo()"
+      class="input-title"
+    />
+     <input
+      type="text"
+      placeholder="Add a task description...."
+      [(ngModel)]="newDescription"
       (keyup.enter)="addTodo()"
       class="input-title"
     />
