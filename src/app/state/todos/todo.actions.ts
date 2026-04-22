@@ -22,7 +22,7 @@ export const TodoActions = createActionGroup({
 
 
         //Toggle
-        'Toggle Todo': props<{ id: number }>(),
+        'Toggle Todo': props<{ id: number, completed: boolean }>(),
         'Toggle Todo Success': props<{ id: number, completed: boolean }>(),
         'Toggle Todo Failure': props<{ error: string }>(),
 

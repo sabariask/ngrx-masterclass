@@ -1,0 +1,44 @@
+{
+  "todos": [
+    {
+      "id": 1,
+      "title": "Learn NgRx Actions",
+      "description": "Study createActions and action creators",
+      "completed": false,
+      "priority": "high",
+      "userId": 1,
+      "createAt": "2024-01-15",
+      "dueDate": "2024-01-20"
+    },
+    {
+      "id": 2,
+      "title": "Build Counter App",
+      "description": "Practice with BehviorSubject",
+      "completed": true,
+      "priority": "medium",
+      "userId": 1,
+      "createAt": "2024-01-14",
+      "dueDate": null
+    },
+    {
+      "id": 4,
+      "title": "Setup NgRx Effects",
+      "description": "Wire Https calls through effects",
+      "completed": false,
+      "priority": "medium",
+      "userId": 1,
+      "createAt": "2024-01-12",
+      "dueDate": null
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "name": "Sana",
+      "email": "sana@example.com",
+      "role": "Admin",
+      "avatarUrl": "https://i.pravatar.cc/100?img=5",
+      "createdAt": "2024-01-01"
+    }
+  ]
+}

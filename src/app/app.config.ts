@@ -9,6 +9,8 @@ import { provideHttpClient } from '@angular/common/http';
 import { counterReducer } from './state/counter/counter.reducer';
 import { todoReducer } from './state/todos/todo.reducer';
 import { authReducer } from './state/auth/auth.reducer';
+import { AuthEffects } from './state/auth/auth.effects';
+import { TodoEffects } from './state/todos/todo.effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -19,7 +21,10 @@ export const appConfig: ApplicationConfig = {
       todos: todoReducer,
       auth: authReducer
     }),
-    provideEffects([]),
+    provideEffects([
+      AuthEffects,
+      TodoEffects
+    ]),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode(), autoPause: true, trace: false }),
     provideHttpClient(),
     provideZoneChangeDetection({ eventCoalescing: true })

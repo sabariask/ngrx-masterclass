@@ -17,32 +17,13 @@ import { AuthActions } from '../state/auth/auth.actions';
   templateUrl: './counter.html',
   styleUrl: './counter.scss',
 })
-export class Counter implements OnInit {
+export class Counter {
   private store = inject(Store<AppState>);
   count$: Observable<number> = this.store.select(CounterSelectors.selectCount);
   isPositive$: Observable<boolean> = this.store.select(CounterSelectors.selectIsPositive);
   isNegative$: Observable<boolean> = this.store.select(CounterSelectors.selectIsNegative);
   lastUpdated$: Observable<string | null> = this.store.select(CounterSelectors.selectLastUpdated);
   summary$: Observable<any> = this.store.select(CounterSelectors.selectCounterSummary);
-
-  ngOnInit(): void {
-    setTimeout(() => {
-      this.store.dispatch(TodoActions.loadTodos());
-    }, 1000)
-
-    setTimeout(() => {
-      this.store.dispatch(AuthActions.loginSuccess({
-        user: {
-          id: 1,
-          email: 'sana@test.com',
-          name: 'sana',
-          role: 'admin',
-          avatarUrl: ''
-        },
-        token: 'abc123'
-      }));
-    }, 2000)
-  }
 
   increment() {
     this.store.dispatch(CounterActions.increment());

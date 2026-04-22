@@ -11,7 +11,7 @@ import { Todo } from '../../models/todo.model';
 })
 export class TodoItem implements OnInit {
   @Input() todo!: Todo;
-  @Output() onToggle = new EventEmitter<number>();
+  @Output() onToggle = new EventEmitter<Todo>();
   @Output() onDelete = new EventEmitter<number>();
 
   ngOnInit(): void {
@@ -28,7 +28,7 @@ export class TodoItem implements OnInit {
   }
 
   toggle(): void {
-    this.onToggle.emit(this.todo.id);
+    this.onToggle.emit(this.todo);
   }
 
   delete(): void {

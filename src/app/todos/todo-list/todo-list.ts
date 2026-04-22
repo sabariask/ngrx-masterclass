@@ -51,8 +51,8 @@ export class TodoList implements OnInit {
     this.newPriority = 'medium';
   }
 
-  toggleTodo(id: number): void {
-    this.store.dispatch(TodoActions.toggleTodo({ id }));
+  toggleTodo(todo: Todo): void {
+    this.store.dispatch(TodoActions.toggleTodo(todo));
   }
 
   deleteTodo(id: number): void {

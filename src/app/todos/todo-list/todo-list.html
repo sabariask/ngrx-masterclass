@@ -66,7 +66,7 @@
         @for (todo of todos; track todo.id) {
           <app-todo-item
             [todo]="todo"
-            (onToggle)="toggleTodo($event)"
+            (onToggle)="toggleTodo(todo)"
             (onDelete)="deleteTodo($event)"
           />
         }
