@@ -5,12 +5,13 @@ import { routes } from './app.routes';
 import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { counterReducer } from './state/counter/counter.reducer';
 import { todoReducer } from './state/todos/todo.reducer';
 import { authReducer } from './state/auth/auth.reducer';
 import { AuthEffects } from './state/auth/auth.effects';
 import { TodoEffects } from './state/todos/todo.effects';
+import { errorInterceptor } from './interceptors/error.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -21,6 +22,9 @@ export const appConfig: ApplicationConfig = {
       todos: todoReducer,
       auth: authReducer
     }),
+    provideHttpClient(
+      withInterceptors([errorInterceptor])
+    ),
     provideEffects([
       AuthEffects,
       TodoEffects

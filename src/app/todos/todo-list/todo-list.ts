@@ -7,7 +7,7 @@ import { Store } from '@ngrx/store';
 import * as TodoSelectors from '../../state/todos/todo.selectors';
 import { TodoActions } from '../../state/todos/todo.actions';
 import { FormsModule } from '@angular/forms';
-import { TodoItem } from "../todo-item/todo-item";
+import { TodoItem } from '../todo-item/todo-item';
 
 @Component({
   selector: 'app-todo-list',
@@ -20,7 +20,7 @@ export class TodoList implements OnInit {
   todos$!: Observable<Todo[]>;
   loading$!: Observable<boolean>;
   error$!: Observable<string | null>;
-  count$!: Observable<{ total: number; completed: number; pending: number; high: number }>
+  count$!: Observable<{ total: number; completed: number; pending: number; high: number }>;
 
   newTitle = '';
   newPriority: 'low' | 'medium' | 'high' = 'medium';
@@ -41,20 +41,22 @@ export class TodoList implements OnInit {
   }
 
   addTodo(): void {
-    if(!this.newTitle.trim()) return;
+    if (!this.newTitle.trim()) return;
 
-    this.store.dispatch(TodoActions.addTodo({
-      title: this.newTitle.trim(),
-      priority: this.newPriority,
-      description: this.newDescription
-    }));
+    this.store.dispatch(
+      TodoActions.addTodo({
+        title: this.newTitle.trim(),
+        priority: this.newPriority,
+        description: this.newDescription,
+      }),
+    );
 
     this.newTitle = '';
     this.newPriority = 'medium';
   }
 
   toggleTodo(todo: Todo): void {
-    this.store.dispatch(TodoActions.toggleTodo(todo));
+    this.store.dispatch(TodoActions.toggleTodo({ id: todo.id, completed: todo.completed }));
   }
 
   deleteTodo(id: number): void {
@@ -65,11 +67,10 @@ export class TodoList implements OnInit {
     this.store.dispatch(TodoActions.clearAllTodos());
   }
 
-
   setFilter(filter: string): void {
     this.filterType = filter;
 
-    switch(filter) {
+    switch (filter) {
       case 'pending':
         this.todos$ = this.store.select(TodoSelectors.selectPendingTodos);
         break;

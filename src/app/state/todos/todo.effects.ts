@@ -2,12 +2,16 @@ import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { TodoService } from '../../services/todo.service';
 import { TodoActions } from './todo.actions';
-import { catchError, map, mergeMap, of, switchMap } from 'rxjs';
+import { catchError, map, mergeMap, of, switchMap, tap } from 'rxjs';
+import { ToastService } from '../../services/toast.service';
+import { Store } from '@ngrx/store';
 
 @Injectable()
 export class TodoEffects {
   actions$ = inject(Actions);
   todoService = inject(TodoService);
+  toast = inject(ToastService);
+  store = inject(Store);
 
   loadTodo$ = createEffect(() =>
     this.actions$.pipe(
@@ -15,16 +19,22 @@ export class TodoEffects {
       switchMap(() =>
         this.todoService.getMockTodos().pipe(
           map((todos) => TodoActions.loadTodosSuccess({ todos })),
-          catchError((error) =>
-            of(
-              TodoActions.loadTodosFailure({
-                error: error.message ?? 'Failed to load todo',
-              }),
-            ),
-          ),
+          catchError((error) => {
+            const message = this.getErrorMessage(error);
+            return of(TodoActions.loadTodosFailure({ error: message }));
+          }),
         ),
       ),
     ),
+  );
+
+  loadTodoFailure$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(TodoActions.loadTodosFailure),
+        tap(({ error }) => this.toast.error(`Error to load todos: ${error}`)),
+      ),
+    { dispatch: false },
   );
 
   addTodo$ = createEffect(() =>
@@ -45,7 +55,7 @@ export class TodoEffects {
               catchError((error) =>
                 of(
                   TodoActions.addTodoFailure({
-                    error: error.message ?? 'Failed to add todo',
+                    error: this.getErrorMessage(error),
                   }),
                 ),
               ),
@@ -53,6 +63,24 @@ export class TodoEffects {
           ),
       ),
     ),
+  );
+
+  addTodoSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(TodoActions.addTodoSuccess),
+        tap(({ todo }) => this.toast.success(`"${todo.title}" added successfully!`)),
+      ),
+    { dispatch: false },
+  );
+
+  addTodoFailure$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(TodoActions.addTodoFailure),
+        tap(({ error }) => this.toast.error(`Failed to add todo: ${error}`)),
+      ),
+    { dispatch: false },
   );
 
   deleteTodo$ = createEffect(() =>
@@ -64,13 +92,31 @@ export class TodoEffects {
           catchError((error) =>
             of(
               TodoActions.deleteTodoFailure({
-                error: error.message ?? 'Failed to delete todo',
+                error: this.getErrorMessage(error),
               }),
             ),
           ),
         ),
       ),
     ),
+  );
+
+  deleteTodoSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(TodoActions.deleteTodoSuccess),
+        tap(() => this.toast.success('Todo deleted!')),
+      ),
+    { dispatch: false },
+  );
+
+  deleteTodoFailure$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(TodoActions.deleteTodoFailure),
+        tap(({ error }) => this.toast.error(`Delete failed: ${error}`)),
+      ),
+    { dispatch: false },
   );
 
   toggleTodo$ = createEffect(() =>
@@ -84,7 +130,7 @@ export class TodoEffects {
           catchError((error) =>
             of(
               TodoActions.toggleTodoFailure({
-                error: error.message ?? 'Failed to toggle todo',
+                error: this.getErrorMessage(error),
               }),
             ),
           ),
@@ -92,4 +138,41 @@ export class TodoEffects {
       ),
     ),
   );
+
+  toggleTodoSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(TodoActions.toggleTodoSuccess),
+        tap(({ completed }) =>
+          this.toast.success(completed ? 'Task completed! 🎉' : 'Task marked as pending'),
+        ),
+      ),
+    { dispatch: false },
+  );
+
+  private getErrorMessage(error: any): string {
+    if (error.name === 'TimeoutError') {
+      return 'Request timed out. Please check your connection.';
+    }
+
+    if (error.status) {
+      switch (error.status) {
+        case 0:
+          return 'No internet connection.';
+        case 400:
+          return 'Bad request. Please check your input.';
+        case 401:
+          return 'Unauthorized. Please login again.';
+        case 403:
+          return 'You do not have the permission';
+        case 404:
+          return 'Resource not found';
+        case 500:
+          return 'Server error. Please try again later.';
+        default:
+          return 'Http Error ${error.status}';
+      }
+    }
+    return error.message ?? 'An unexpected error occurred.';
+  }
 }

@@ -6,7 +6,7 @@ export interface Toast {
   type: 'success' | 'error' | 'warning' | 'info';
 }
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ToastService {
   toasts = signal<Toast[]>([]);
 
