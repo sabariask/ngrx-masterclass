@@ -1,5 +1,5 @@
 import { createActionGroup, emptyProps, props } from "@ngrx/store";
-import { Todo } from "../../models/todo.model";
+import { Todo } from "../../../models/todo.model";
 
 
 export const TodoActions = createActionGroup({

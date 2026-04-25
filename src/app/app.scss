@@ -57,3 +57,27 @@ body {
     max-width: 1100px;
     margin: 0 auto;
 }
+
+.nav-user {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: #ccc;
+    font-size: 0.9rem;
+
+    .btn-logout {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 0.3rem 0.9rem;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        transition: all 0.2s;
+
+        &:hover {
+            background: #e94560;
+            border-color: #e94560;
+        }
+    }
+}

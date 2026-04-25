@@ -12,6 +12,10 @@ export class TodoService {
     return this.http.get<Todo[]>(`${this.apiUrl}`).pipe(timeout(5000), retry(2));
   }
 
+  getAllTodos(): Observable<Todo[]> {
+    return this.http.get<Todo[]>(`${this.apiUrl}`).pipe(timeout(5000), retry(2));
+  }
+
   getTodoById(id: number = 1): Observable<Todo> {
     return this.http.get<Todo>(`${this.apiUrl}/${id}`).pipe(timeout(5000));
   }

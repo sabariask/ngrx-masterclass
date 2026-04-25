@@ -9,8 +9,8 @@ import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AppState } from '../state/app.state';
 import * as dashboardSelectors from '../state/dashboard/dashboard.selectors';
-import { TodoActions } from '../state/todos/todo.actions';
-import { AuthActions } from '../state/auth/auth.actions';
+import { TodoActions } from '../../app/features/todos/store/todo.actions';
+import { AuthActions } from '../store/auth/auth.actions';
 
 @Component({
   selector: 'app-dashboard',

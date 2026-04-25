@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Todo } from '../../models/todo.model';
-import { AppState } from '../../state/app.state';
+import { Todo } from '../../../models/todo.model';
+import { AppState } from '../../../state/app.state';
 import { Store } from '@ngrx/store';
-import * as TodoSelectors from '../../state/todos/todo.selectors';
-import { TodoActions } from '../../state/todos/todo.actions';
+import * as TodoSelectors from '../../../features/todos/store/todo.selectors';
+import { TodoActions } from '../../../features/todos//store/todo.actions';
 import { FormsModule } from '@angular/forms';
 import { TodoItem } from '../todo-item/todo-item';
 

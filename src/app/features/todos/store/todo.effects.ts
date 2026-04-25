@@ -1,10 +1,10 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { TodoService } from '../../services/todo.service';
 import { TodoActions } from './todo.actions';
-import { catchError, map, mergeMap, of, switchMap, tap } from 'rxjs';
-import { ToastService } from '../../services/toast.service';
+import { catchError, delay, map, mergeMap, of, retryWhen, switchMap, take, tap } from 'rxjs';
 import { Store } from '@ngrx/store';
+import { ToastService } from '../../../services/toast.service';
+import { TodoService } from '../../../services/todo.service';
 
 @Injectable()
 export class TodoEffects {
@@ -148,6 +148,26 @@ export class TodoEffects {
         ),
       ),
     { dispatch: false },
+  );
+
+  loadTodoWithRetry$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType('[App] Init Load'),
+      switchMap(() =>
+        this.todoService.getAllTodos().pipe(
+          map((todos) => TodoActions.loadTodosSuccess({ todos })),
+          retryWhen((errors) =>
+            errors.pipe(
+              delay(2000),
+              take(3),
+              tap((err) =>
+                console.warn('Retrying to load todos after error:', this.getErrorMessage(err)),
+              ),
+            ),
+          ),
+        ),
+      ),
+    ),
   );
 
   private getErrorMessage(error: any): string {

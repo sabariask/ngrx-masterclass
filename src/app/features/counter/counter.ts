@@ -1,14 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { CounterService } from '../services/counter-service';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { AppState } from '../state/app.state';
-import * as CounterSelectors from '../state/counter/counter.selectors';
-import * as CounterActions from '../state/counter/counter.actions';
-import { TodoActions } from '../state/todos/todo.actions';
-import { AuthActions } from '../state/auth/auth.actions';
+import * as CounterSelectors from '../../features/counter/store/counter.selectors';
+import * as CounterActions from '../../features/counter/store/counter.actions';
+import { AppState } from '../../state/app.state';
 
 @Component({
   selector: 'app-counter',

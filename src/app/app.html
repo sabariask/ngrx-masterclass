@@ -1,16 +1,23 @@
 <nav class="navbar">
   <div class="nav-brand">🚀 NgRx Masterclass</div>
-  <ul class="nav-links">
-    <li>
-      <a [routerLink]="'/dashboard'" routerLinkActive="active"> 📊 Dashboard </a>
-    </li>
-    <li>
-      <a [routerLink]="'/counter'" routerLinkActive="active"> 🔢 Counter </a>
-    </li>
-    <li>
-      <a [routerLink]="'/todos'" routerLinkActive="active"> 📝 Todos </a>
-    </li>
-  </ul>
+  @if (isLoggedIn$ | async) {
+    <ul class="nav-links">
+      <li>
+        <a [routerLink]="'/dashboard'" routerLinkActive="active"> 📊 Dashboard </a>
+      </li>
+      <li>
+        <a [routerLink]="'/counter'" routerLinkActive="active"> 🔢 Counter </a>
+      </li>
+      <li>
+        <a [routerLink]="'/todos'" routerLinkActive="active"> 📝 Todos </a>
+      </li>
+    </ul>
+
+    <div class="nav-user">
+      <span>{{ userName$ | async}}</span>
+      <button class="btn-logout" (click)="logout()">Logout</button>
+    </div>
+  }
 </nav>
 
 <main class="main-content">

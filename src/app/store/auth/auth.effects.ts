@@ -62,7 +62,8 @@ export class AuthEffects {
   logoutRedirect$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.logoutSuccess),
-      tap(() => this.router.navigate(['/dashboard'])),
+      tap(() => this.router.navigate(['/login'])),
     ),
+    { dispatch: false }
   );
 }
