@@ -1,34 +1,31 @@
 import { createSelector } from '@ngrx/store';
 import * as AuthSelectors from '../../store/auth/auth.selectors';
+import * as TodoSelectors from '../../features/todos/store/todo.selectors';
 import { AppState } from '../app.state';
 
 export const selectDashboardViewModel = createSelector(
-  (state: AppState) => state,
+  TodoSelectors.selectAllTodos,
+  TodoSelectors.selectTodosLoading,
   AuthSelectors.selectAuthUser,
   AuthSelectors.selectIsAdmin,
-  (state, user, isAdmin) => ({
-    user,
-    isAdmin,
-    counts: state.todos
-      ? {
-          total: state.todos.todos.length,
-          completed: state.todos.todos.filter((t) => t.completed).length,
-          pending: state.todos.todos.filter((t) => !t.completed).length,
-          high: state.todos.todos.filter((t) => t.priority === 'high').length,
-        }
-      : {
-          total: 0,
-          completed: 0,
-          pending: 0,
-          high: 0,
-        },
-    completionRate: state.todos?.todos
-      ? Math.round(
-          (state.todos?.todos.filter((t) => t.completed).length / state.todos?.todos.length) * 100,
-        )
-      : 0,
-    highPriorityTodos: state.todos?.todos.filter((t) => t.priority === 'high' && !t.completed),
-    loading: state.todos?.loading ?? false,
-    greeting: `Hello, ${user?.name ?? 'Guest'}!`,
-  }),
+  (todos, loading, user, isAdmin) => {
+    const total = todos.length;
+    const completed = todos.filter((t) => t.completed).length;
+    const high = todos.filter((t) => t.priority === 'high').length;
+    const pending = todos.filter((t) => !t.completed).length;
+    return {
+      user,
+      isAdmin,
+      loading,
+      counts: {
+        total,
+        completed,
+        pending,
+        high,
+      },
+      completionRate: total > 0 ? Math.round((completed / total) * 100) : 0,
+      highPriorityTodos: todos.filter((t) => t.priority === 'high' && !t.completed),
+      greeting: `Hello, ${user?.name ?? 'Guest'}!`,
+    };
+  },
 );

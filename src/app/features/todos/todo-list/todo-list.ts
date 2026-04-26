@@ -17,10 +17,11 @@ import { TodoItem } from '../todo-item/todo-item';
   styleUrl: './todo-list.scss',
 })
 export class TodoList implements OnInit {
-  todos$!: Observable<Todo[]>;
+  filteredTodos$!: Observable<Todo[]>;
   loading$!: Observable<boolean>;
   error$!: Observable<string | null>;
-  count$!: Observable<{ total: number; completed: number; pending: number; high: number }>;
+  counts$!: Observable<{ total: number; completed: number; pending: number; high: number }>;
+  activeFilter$!: Observable<string>;
 
   newTitle = '';
   newPriority: 'low' | 'medium' | 'high' = 'medium';
@@ -30,10 +31,11 @@ export class TodoList implements OnInit {
   store = inject(Store<AppState>);
 
   constructor() {
-    this.todos$ = this.store.select(TodoSelectors.selectAllTodos);
+    this.filteredTodos$ = this.store.select(TodoSelectors.selectFilteredTodos);
     this.loading$ = this.store.select(TodoSelectors.selectTodosLoading);
-    this.count$ = this.store.select(TodoSelectors.selectTodosCount);
+    this.counts$ = this.store.select(TodoSelectors.selectTodosCount);
     this.error$ = this.store.select(TodoSelectors.selectTodosError);
+    this.activeFilter$ = this.store.select(TodoSelectors.selectTodosFilter);
   }
 
   ngOnInit(): void {
@@ -67,22 +69,8 @@ export class TodoList implements OnInit {
     this.store.dispatch(TodoActions.clearAllTodos());
   }
 
-  setFilter(filter: string): void {
-    this.filterType = filter;
-
-    switch (filter) {
-      case 'pending':
-        this.todos$ = this.store.select(TodoSelectors.selectPendingTodos);
-        break;
-      case 'completed':
-        this.todos$ = this.store.select(TodoSelectors.selectCompletedTodos);
-        break;
-      case 'high':
-        this.todos$ = this.store.select(TodoSelectors.selectHighPriorityTodos);
-        break;
-      default:
-        this.todos$ = this.store.select(TodoSelectors.selectAllTodos);
-    }
+  setFilter(filter: 'all' | 'pending' | 'high' | 'completed'): void {
+    this.store.dispatch(TodoActions.setFilter({ filter }));
   }
 
   trackByTodoId(index: number, toto: Todo) {

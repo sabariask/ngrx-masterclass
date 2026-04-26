@@ -26,6 +26,9 @@ export const TodoActions = createActionGroup({
         'Toggle Todo Success': props<{ id: number, completed: boolean }>(),
         'Toggle Todo Failure': props<{ error: string }>(),
 
-        'Clear All Todos': emptyProps()
+        'Clear All Todos': emptyProps(),
+
+        'Set Filter': props<{ filter: 'all' | 'pending' | 'completed' | 'high' }>(),
+        'Select Todo': props<{ id: number }>()
     }
 })

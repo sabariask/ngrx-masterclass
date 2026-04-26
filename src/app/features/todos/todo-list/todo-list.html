@@ -4,7 +4,7 @@
     <button class="btn-clear" (click)="clearAll()">🗑 Clear All</button>
   </div>
 
-  @if (count$ | async; as counts) {
+  @if (counts$ | async; as counts) {
     <div class="stats-row">
       <div class="stat" (click)="setFilter('all')" [class.active]="filterType === 'all'">
         <span>{{ counts.total }}</span>
@@ -52,7 +52,7 @@
     <button class="btn-add" (click)="addTodo()">+ Add</button>
   </div>
 
-  @if ((loading$ | async) && !(todos$ | async)?.length) {
+  @if ((loading$ | async) && !(filteredTodos$ | async)?.length) {
     <div class="loading">
       <div class="spinner"></div>
       <p>Loading todos....</p>
@@ -62,7 +62,7 @@
     <div class="error">❌ {{ error }}</div>
   }
 
-  @if (todos$ | async; as todos) {
+  @if (filteredTodos$ | async; as todos) {
     @if (todos.length === 0) {
       <div class="empty-state">
         <p>🎉No tasks here!</p>
