@@ -26,7 +26,6 @@ export class TodoList implements OnInit {
   newTitle = '';
   newPriority: 'low' | 'medium' | 'high' = 'medium';
   newDescription = '';
-  filterType = 'all';
 
   store = inject(Store<AppState>);
 

@@ -6,23 +6,23 @@
 
   @if (counts$ | async; as counts) {
     <div class="stats-row">
-      <div class="stat" (click)="setFilter('all')" [class.active]="filterType === 'all'">
+      <div class="stat" (click)="setFilter('all')" [class.active]="(activeFilter$ | async) === 'all'">
         <span>{{ counts.total }}</span>
         <label for="all">All</label>
       </div>
-      <div class="stat" (click)="setFilter('pending')" [class.active]="filterType === 'pending'">
+      <div class="stat" (click)="setFilter('pending')" [class.active]="(activeFilter$ | async) === 'pending'">
         <span>{{ counts.pending }}</span>
         <label for="pending">Pending</label>
       </div>
       <div
         class="stat"
         (click)="setFilter('completed')"
-        [class.active]="filterType === 'completed'"
+        [class.active]="(activeFilter$ | async) === 'completed'"
       >
         <span>{{ counts.completed }}</span>
         <label for="completed">Completed</label>
       </div>
-      <div class="stat danger" (click)="setFilter('high')" [class.active]="filterType === 'high'">
+      <div class="stat danger" (click)="setFilter('high')" [class.active]="(activeFilter$ | async) === 'high'">
         <span>{{ counts.high }}</span>
         <label for="high priority">High Priority</label>
       </div>
