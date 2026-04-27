@@ -17,22 +17,25 @@ import { authReducer } from './store/auth/auth.reducer';
 import { AuthEffects } from './store/auth/auth.effects';
 import { TodoEffects } from '../app/features/todos/store/todo.effects';
 import { errorInterceptor } from './interceptors/error.interceptor';
-import { provideRouterStore, routerReducer } from '@ngrx/router-store';
+import { provideRouterStore, routerReducer, RouterStateSerializer } from '@ngrx/router-store';
+import { CustomSerializer } from './store/router/custom-route-serializer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes, withPreloading(PreloadAllModules)),
     provideStore({
-        auth: authReducer,
-        router: routerReducer
+      auth: authReducer,
+      router: routerReducer,
     }),
     provideRouterStore(),
+    {
+      provide: RouterStateSerializer,
+      useClass: CustomSerializer
+    },
     provideHttpClient(withInterceptors([errorInterceptor])),
     provideEffects([AuthEffects]),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode(), autoPause: true, trace: false }),
-    provideHttpClient(),
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouterStore()
-],
+  ],
 };

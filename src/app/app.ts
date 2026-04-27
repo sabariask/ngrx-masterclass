@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
-import { RouterModule, RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterModule, RouterOutlet } from '@angular/router';
 import { Toast } from './shared/toast/toast';
-import { Observable } from 'rxjs';
+import { filter, Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { selectIsLoggedIn, selectUserName } from './store/auth/auth.selectors';
 import { AuthActions } from './store/auth/auth.actions';
@@ -18,7 +18,12 @@ export class App {
   userName$!: Observable<string>;
 
   store = inject(Store);
+  router = inject(Router);
+
   constructor() {
+    this.router.events.pipe(filter((e) => e instanceof NavigationEnd)).subscribe((e: any) => {
+      console.log('Navigation:', e.url);
+    });
     this.isLoggedIn$ = this.store.select(selectIsLoggedIn);
     this.userName$ = this.store.select(selectUserName);
   }

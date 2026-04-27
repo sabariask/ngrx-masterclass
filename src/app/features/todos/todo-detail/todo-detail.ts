@@ -18,10 +18,13 @@ import { RouterLink } from "@angular/router";
 export class TodoDetail {
   todo$!: Observable<Todo | null>;
   loading$!: Observable<boolean>;
+  todoId$!: Observable<number | null>;
 
   store = inject(Store);
 
   constructor() {
+    this.todoId$ = this.store.select(selectTodoIdFromRoute);
+
     this.todo$ = this.store.select(selectTodoIdFromRoute).pipe(
       filter((id) => id !== null),
       switchMap((id) => this.store.select(TodoSelectors.selectTodoById(id!))),
