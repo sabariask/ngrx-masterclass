@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Todo } from '../../../models/todo.model';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-todo-item',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   standalone: true,
   templateUrl: './todo-item.html',
   styleUrl: './todo-item.scss',

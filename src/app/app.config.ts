@@ -17,18 +17,22 @@ import { authReducer } from './store/auth/auth.reducer';
 import { AuthEffects } from './store/auth/auth.effects';
 import { TodoEffects } from '../app/features/todos/store/todo.effects';
 import { errorInterceptor } from './interceptors/error.interceptor';
+import { provideRouterStore, routerReducer } from '@ngrx/router-store';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes, withPreloading(PreloadAllModules)),
     provideStore({
-      auth: authReducer,
+        auth: authReducer,
+        router: routerReducer
     }),
+    provideRouterStore(),
     provideHttpClient(withInterceptors([errorInterceptor])),
     provideEffects([AuthEffects]),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode(), autoPause: true, trace: false }),
     provideHttpClient(),
     provideZoneChangeDetection({ eventCoalescing: true }),
-  ],
+    provideRouterStore()
+],
 };

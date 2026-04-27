@@ -1,0 +1,59 @@
+<div class="detail-page">
+  <a routerLink="/todos" class="back-link"><- Back to Todos</a>
+
+  @if (loading$ | async) {
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Loading</p>
+    </div>
+  }
+  @if (todo$ | async; as todo) {
+    <div class="detail-card">
+      <div class="detail-header">
+        <div class="priority-bar priority-{{ todo.priority }}"></div>
+        <div class="header-content">
+          <h1 [class.strikethrough]="todo.completed">
+            {{ todo.title }}
+          </h1>
+          <div class="badges">
+            <span class="priority-badges priority-{{ todo.priority }}">
+              {{ todo.priority }}
+            </span>
+            <span class="status-badge" [class.done]="todo.completed">
+              {{ todo.completed ? '✅ Completed' : '⏳ Pending' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    @if (todo.description) {
+      <div class="detail-section">
+        <h3>📝 Description</h3>
+        <p>{{ todo.description }}</p>
+      </div>
+    }
+
+    <div class="detail-section">
+      <h3>📅 Dates</h3>
+      <div class="dates">
+        <div class="date-item">
+          <label for="created">Created</label>
+          <span>{{ todo.createdAt | date: 'mediumDate' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-actions">
+      <button class="btn-toggle" [class.completed]="todo.completed" (click)="toggleTodo(todo)">
+        {{ todo.completed ? '↩️ Mark Pending' : '✅ Mark Complete' }}
+      </button>
+      <button class="btn-delete" (click)="deleteTodo(todo.id)">🗑️ Delete</button>
+    </div>
+  } @else {
+    <div class="not-found">
+        <p>😕 Todo not found!</p>
+        <a routerLink="/todos">Go back to list</a>
+    </div>
+  }
+</div>

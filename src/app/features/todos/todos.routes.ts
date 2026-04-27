@@ -8,6 +8,15 @@ export const TODOS_ROUTES: Routes = [
   {
     path: '',
     providers: [provideState('todos', todoReducer), provideEffects([TodoEffects])],
-    loadComponent: () => import('./todo-list/todo-list').then((m) => m.TodoList),
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./todo-list/todo-list').then((m) => m.TodoList),
+      },
+      {
+        path: ':id',
+        loadComponent: () => import('./todo-detail/todo-detail').then((m) => m.TodoDetail),
+      },
+    ],
   },
 ];

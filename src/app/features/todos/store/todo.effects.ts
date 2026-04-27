@@ -1,10 +1,24 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { TodoActions } from './todo.actions';
-import { catchError, delay, map, mergeMap, of, retryWhen, switchMap, take, tap } from 'rxjs';
+import {
+  catchError,
+  delay,
+  filter,
+  map,
+  mergeMap,
+  of,
+  retryWhen,
+  switchMap,
+  take,
+  tap,
+  withLatestFrom,
+} from 'rxjs';
 import { Store } from '@ngrx/store';
 import { ToastService } from '../../../services/toast.service';
 import { TodoService } from '../../../services/todo.service';
+import { ROUTER_NAVIGATED } from '@ngrx/router-store';
+import { selectTodoIdFromRoute } from '../../../store/router/router.selectors';
 
 @Injectable()
 export class TodoEffects {
@@ -167,6 +181,15 @@ export class TodoEffects {
           ),
         ),
       ),
+    ),
+  );
+
+  loadTodoOnRouteChange$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(ROUTER_NAVIGATED),
+      withLatestFrom(this.store.select(selectTodoIdFromRoute)),
+      filter(([, id]) => id != null),
+      map(([, id]) => TodoActions.selectTodo({ id: id! })),
     ),
   );
 

@@ -3,9 +3,11 @@
 
   <div class="todo-body">
     <div class="todo-header">
-      <h4 [class.strikethrough]="todo.completed">
-        {{ todo.title }}
-      </h4>
+      <a [routerLink]="['/todo', todo.id]">
+        <h4 [class.strikethrough]="todo.completed">
+          {{ todo.title }}
+        </h4>
+      </a>
       <span class="priority-tag priority-{{ todo.priority }}">
         {{ todo.priority }}
       </span>
