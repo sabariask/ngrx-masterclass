@@ -3,10 +3,9 @@ import { CanActivateFn, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import {
   selectAuthInitialized,
-  selectAuthLoading,
   selectIsLoggedIn,
 } from '../store/auth/auth.selectors';
-import { combineLatest, filter, map, skipWhile, take } from 'rxjs';
+import { combineLatest, filter, map, take } from 'rxjs';
 
 export const redirectIfLoggedInGuard: CanActivateFn = (route, state) => {
   const store = inject(Store);
