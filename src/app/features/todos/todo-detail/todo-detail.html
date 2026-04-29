@@ -45,10 +45,10 @@
     </div>
 
     <div class="detail-actions">
-      <button class="btn-toggle" [class.completed]="todo.completed" (click)="toggleTodo(todo)">
+      <button type="button" class="btn-toggle" [class.completed]="todo.completed" (click)="toggleTodo(todo)">
         {{ todo.completed ? '↩️ Mark Pending' : '✅ Mark Complete' }}
       </button>
-      <button class="btn-delete" (click)="deleteTodo(todo.id)">🗑️ Delete</button>
+      <button type="button" class="btn-delete" (click)="deleteTodo(todo.id)">🗑️ Delete</button>
     </div>
   } @else {
     <div class="not-found">

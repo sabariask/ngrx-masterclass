@@ -3,20 +3,36 @@ import { adapter, TodoState } from './todo.state';
 
 export const selectTodoState = createFeatureSelector<TodoState>('todos');
 
-const { selectIds, selectEntities, selectAll, selectTotal } = adapter.getSelectors(selectTodoState);
+export const selectAllTodos = createSelector(selectTodoState, (state) => {
+  if (!state) return [];
+  return adapter.getSelectors().selectAll(state);
+});
 
-export const selectTodosIds = selectIds;
-export const selectTodoEntities = selectEntities;
-export const selectAllTodos = selectAll;
-export const selectTotalTodos = selectTotal;
+export const selectTodosIds = createSelector(selectTodoState, (state) => {
+  if (!state) return [];
+  return adapter.getSelectors().selectIds(state);
+});
 
-export const selectTodosLoading = createSelector(selectTodoState, ({ loading }) => loading);
+export const selectTodosEntities = createSelector(selectTodoState, (state) => {
+  if (!state) return {};
+  return adapter.getSelectors().selectEntities(state);
+});
 
-export const selectTodosError = createSelector(selectTodoState, ({ error }) => error);
+export const selectTotalTodos = createSelector(selectTodoState, (state) => {
+  if (!state) return 0;
+  return adapter.getSelectors().selectTotal(state);
+});
 
-export const selectSelectedId = createSelector(selectTodoState, ({ selectedId }) => selectedId);
+export const selectTodosLoading = createSelector(
+  selectTodoState,
+  (state) => state?.loading ?? false,
+);
 
-export const selectTodosFilter = createSelector(selectTodoState, ({ filter }) => filter);
+export const selectTodosError = createSelector(selectTodoState, (state) => state?.error ?? '');
+
+export const selectSelectedId = createSelector(selectTodoState, (state) => state?.selectedId ?? 0);
+
+export const selectTodosFilter = createSelector(selectTodoState, (state) => state?.filter ?? 'all');
 
 export const selectCompletedTodos = createSelector(selectAllTodos, (todos) =>
   todos.filter((t) => t.completed),
@@ -78,7 +94,7 @@ export const selectFilteredTodos = createSelector(
 );
 
 export const selectSelectedTodo = createSelector(
-  selectTodoEntities,
+  selectTodosEntities,
   selectSelectedId,
   (entities, selectedId) => (selectedId ? (entities[selectedId] ?? null) : null),
 );

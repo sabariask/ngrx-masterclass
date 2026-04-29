@@ -14,24 +14,9 @@ export interface RouterStateUrl {
 export class CustomSerializer implements RouterStateSerializer<RouterStateUrl> {
   serialize(routerState: RouterStateSnapshot): RouterStateUrl {
     let route: ActivatedRouteSnapshot = routerState.root;
-    let depth = 0;
 
     console.log('=== CustomSerializer START ===');
     console.log('Full URL:', routerState.url);
-
-    let current: ActivatedRouteSnapshot | null = routerState.root;
-
-    while (current) {
-      console.log(`Level ${depth}:`, {
-        url: current.url.map((u) => u.path).join('/'),
-        params: current.params,
-        routeConfig: current.routeConfig?.path,
-        childern: current.children.length,
-      });
-
-      depth++;
-      current = current.firstChild;
-    }
 
     while (route.firstChild) {
       route = route.firstChild;

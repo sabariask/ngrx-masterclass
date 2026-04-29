@@ -24,6 +24,7 @@
 
   <div class="todo-actions">
     <button
+      type="button"
       class="btn-toggle"
       (click)="toggle()"
       [title]="todo.completed ? 'Mark Pending' : 'Mark Complete'"
@@ -31,6 +32,6 @@
       {{ todo.completed ? '↩️' : '✅' }}
     </button>
 
-    <button class="btn-delete" (click)="delete()" title="delete">🗑️</button>
+    <button type="button" class="btn-delete" (click)="delete()" title="delete">🗑️</button>
   </div>
 </div>

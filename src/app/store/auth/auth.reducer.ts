@@ -1,59 +1,61 @@
-import { createReducer, on } from "@ngrx/store";
-import { initialAuthState } from "./auth.state";
-import { AuthActions } from "./auth.actions";
-
-
+import { createReducer, on } from '@ngrx/store';
+import { clearAuthState, initialAuthState } from './auth.state';
+import { AuthActions } from './auth.actions';
 
 export const authReducer = createReducer(
-    initialAuthState,
+  initialAuthState,
 
-    // Login
-    on(AuthActions.login, (state)=>({
-        ...state,
-        loading: true,
-        error: null
-    })),
-    on(AuthActions.loginSuccess, (state, { user, token })=>({
-        ...state,
-        user,
-        token,
-        isLoggedIn: true,
-        loading: false,
-        error: null
-    })),
-    on(AuthActions.loginFailure, (state, { error })=>({
-        ...state,
-        user: null,
-        token: null,
-        isLoggedIn: false,
-        loading: false,
-        error
-    })),
+  // Login
+  on(AuthActions.login, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+  on(AuthActions.loginSuccess, (state, { user, token }) => ({
+    ...state,
+    user,
+    token,
+    isLoggedIn: true,
+    loading: false,
+    error: null,
+    initialized: true,
+  })),
+  on(AuthActions.loginFailure, (state, { error }) => ({
+    ...state,
+    user: null,
+    token: null,
+    isLoggedIn: false,
+    loading: false,
+    initialized: true,
+    error,
+  })),
 
-    // Logout
-    on(AuthActions.logout, (state)=>({
-        ...state,
-        loading: true,
-    })),
-    on(AuthActions.logoutSuccess, ()=> ({
-        ...initialAuthState
-    })),
+  // Logout
+  on(AuthActions.logout, (state) => ({
+    ...state,
+    loading: true,
+  })),
+  on(AuthActions.logoutSuccess, () => ({
+    ...clearAuthState,
+  })),
 
-    // Load profile
-    on(AuthActions.loadProfile, (state)=>({
-        ...state,
-        loading: true,
-        error: null
-    })),
-    on(AuthActions.loadProfileSuccess, (state, { user })=>({
-        ...state,
-        user,
-        loading: false,
-        error: null
-    })),
-    on(AuthActions.loadProfileFailure, (state, { error })=>({
-        ...state,
-        loading: false,
-        error
-    }))
-)
+  // Load profile
+  on(AuthActions.loadProfile, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+  on(AuthActions.loadProfileSuccess, (state, { user }) => ({
+    ...state,
+    user,
+    loading: false,
+    error: null,
+    initialized: true,
+  })),
+  on(AuthActions.loadProfileFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error,
+    initialized: true,
+  })),
+);

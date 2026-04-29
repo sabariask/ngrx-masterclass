@@ -1,7 +1,6 @@
 import { createSelector } from '@ngrx/store';
 import * as AuthSelectors from '../../store/auth/auth.selectors';
 import * as TodoSelectors from '../../features/todos/store/todo.selectors';
-import { AppState } from '../app.state';
 
 export const selectDashboardViewModel = createSelector(
   TodoSelectors.selectAllTodos,

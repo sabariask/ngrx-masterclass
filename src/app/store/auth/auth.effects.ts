@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType, ROOT_EFFECTS_INIT } from '@ngrx/effects';
 import { UserService } from '../../services/user.service';
 import { Router } from '@angular/router';
 import { AuthActions } from './auth.actions';
@@ -10,6 +10,44 @@ export class AuthEffects {
   actions$ = inject(Actions);
   userService = inject(UserService);
   router = inject(Router);
+
+  initAuth$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(ROOT_EFFECTS_INIT),
+      map(() => {
+        const token = localStorage.getItem('auth_token');
+        const user = localStorage.getItem('auth_user');
+
+        console.log('Init token found!!', token);
+
+        if (token && user) {
+          try {
+            const authUser = JSON.parse(user);
+
+            return AuthActions.loginSuccess({ user: authUser, token });
+          } catch {
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('auth_user');
+          }
+        }
+        return AuthActions.logoutSuccess();
+      }),
+    ),
+  );
+
+  saveToken$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActions.loginSuccess),
+        tap(({ user, token }) => {
+          localStorage.setItem("auth_token", token);
+          localStorage.setItem("auth_user", JSON.stringify(user));
+        }),
+      ),
+    {
+      dispatch: false,
+    },
+  );
 
   loadProfile$ = createEffect(() =>
     this.actions$.pipe(
@@ -47,7 +85,13 @@ export class AuthEffects {
     () =>
       this.actions$.pipe(
         ofType(AuthActions.loginSuccess),
-        tap(() => this.router.navigate(['/dashboard'])),
+        tap(() => {
+          const currentUrl = this.router.url;
+
+          if (currentUrl === '/login' || currentUrl === '/') {
+            this.router.navigate(['/dashboard']);
+          }
+        }),
       ),
     { dispatch: false },
   );
@@ -59,11 +103,25 @@ export class AuthEffects {
     ),
   );
 
-  logoutRedirect$ = createEffect(() =>
+  clearToken$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.logoutSuccess),
-      tap(() => this.router.navigate(['/login'])),
+      tap(() => {
+        localStorage.removeItem('auth_user');
+        localStorage.removeItem('auth_token');
+      }),
     ),
-    { dispatch: false }
+    {
+      dispatch: false
+    }
+  );
+
+  logoutRedirect$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActions.logoutSuccess),
+        tap(() => this.router.navigate(['/login'])),
+      ),
+    { dispatch: false },
   );
 }

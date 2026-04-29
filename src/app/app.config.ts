@@ -27,15 +27,24 @@ export const appConfig: ApplicationConfig = {
     provideStore({
       auth: authReducer,
       router: routerReducer,
+      todos: todoReducer,
     }),
     provideRouterStore(),
     {
       provide: RouterStateSerializer,
-      useClass: CustomSerializer
+      useClass: CustomSerializer,
     },
     provideHttpClient(withInterceptors([errorInterceptor])),
-    provideEffects([AuthEffects]),
-    provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode(), autoPause: true, trace: false }),
+    provideEffects([AuthEffects, TodoEffects]),
+    provideStoreDevtools({
+      maxAge: 25,
+      logOnly: !isDevMode(),
+      autoPause: true,
+      trace: false,
+      actionsBlocklist: [
+        '@ngrx/router-store/request',
+      ],
+    }),
     provideZoneChangeDetection({ eventCoalescing: true }),
   ],
 };

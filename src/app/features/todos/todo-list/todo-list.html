@@ -49,7 +49,7 @@
       <option value="medium">🟠 Medium</option>
       <option value="high">🔴 High</option>
     </select>
-    <button class="btn-add" (click)="addTodo()">+ Add</button>
+    <button type="button" class="btn-add" (click)="addTodo()">+ Add</button>
   </div>
 
   @if ((loading$ | async) && !(filteredTodos$ | async)?.length) {
