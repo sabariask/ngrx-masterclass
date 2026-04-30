@@ -2,30 +2,44 @@
   <div class="page-header">
     <h2>📝 My Todos</h2>
     <button class="btn-clear" (click)="clearAll()">🗑 Clear All</button>
+    <button class="btn-filter" (click)="filterStore.toggleFiltersPanel()">
+      🔍 Filters
+      @if (activeFilterCount$ | async; as count) {
+        @if (count > 0) {
+          <span class="filter-badge">{{ count }}</span>
+        }
+      }
+    </button>
   </div>
 
-  @if (counts$ | async; as counts) {
-    <div class="stats-row">
-      <div class="stat" (click)="setFilter('all')" [class.active]="(activeFilter$ | async) === 'all'">
-        <span>{{ counts.total }}</span>
-        <label for="all">All</label>
+  @if (showFilters$ | async) {
+    <div class="filter-panel">
+      <input type="text" class="filter-input" (input)="onSearch($any($event.target)?.value)" />
+
+      <div class="filter-group">
+        <label for="priority">Priority:</label>
+        <select class="filter-select" (change)="onPriorityFilter($any($event.target).value)">
+          <option value="all">All</option>
+          <option value="high">🔴 High</option>
+          <option value="medium">🟠 Medium</option>
+          <option value="low">🟢 Low</option>
+        </select>
       </div>
-      <div class="stat" (click)="setFilter('pending')" [class.active]="(activeFilter$ | async) === 'pending'">
-        <span>{{ counts.pending }}</span>
-        <label for="pending">Pending</label>
+
+      <div class="filter-group">
+        <label for="status">Status:</label>
+        <select class="filter-select" (change)="onStatusFilter($any($event.target).value)">
+          <option value="all">All</option>
+          <option value="pending">⏳ Pending</option>
+          <option value="completed">✅ Completed</option>
+        </select>
       </div>
-      <div
-        class="stat"
-        (click)="setFilter('completed')"
-        [class.active]="(activeFilter$ | async) === 'completed'"
-      >
-        <span>{{ counts.completed }}</span>
-        <label for="completed">Completed</label>
-      </div>
-      <div class="stat danger" (click)="setFilter('high')" [class.active]="(activeFilter$ | async) === 'high'">
-        <span>{{ counts.high }}</span>
-        <label for="high priority">High Priority</label>
-      </div>
+
+      @if (hasActiveFilterCount$ | async) {
+        <button type="button" class="btn-clear-filters" (click)="clearFilters()">
+          ✕ Clear Filters
+        </button>
+      }
     </div>
   }
 
@@ -37,7 +51,7 @@
       (keyup.enter)="addTodo()"
       class="input-title"
     />
-     <input
+    <input
       type="text"
       placeholder="Add a task description...."
       [(ngModel)]="newDescription"
@@ -52,7 +66,7 @@
     <button type="button" class="btn-add" (click)="addTodo()">+ Add</button>
   </div>
 
-  @if ((loading$ | async) && !(filteredTodos$ | async)?.length) {
+  @if ((loading$ | async) && !(allTodos$ | async)?.length) {
     <div class="loading">
       <div class="spinner"></div>
       <p>Loading todos....</p>
@@ -62,21 +76,47 @@
     <div class="error">❌ {{ error }}</div>
   }
 
-  @if (filteredTodos$ | async; as todos) {
-    @if (todos.length === 0) {
+  @if (filteredPaginatedTodos$ | async; as results) {
+    <div class="result-info">
+      <span>Showing {{ results.items.length }} of {{ results.totalItems }}</span>
+    </div>
+    @if (results.length === 0) {
       <div class="empty-state">
         <p>🎉No tasks here!</p>
-        <small>Add a task above to get started</small>
-      </div>
-    } @else {
-      <div class="todo-list">
-        @for (todo of todos; track todo.id) {
-          <app-todo-item
-            [todo]="todo"
-            (onToggle)="toggleTodo(todo)"
-            (onDelete)="deleteTodo($event)"
-          />
+        @if (hasActiveFilterCount$ | async) {
+          <button type="button" (click)="clearFilters()">Clear Filters</button>
         }
+      </div>
+    }
+    <div class="todo-list">
+      @for (todo of results.items; track todo.id) {
+        <app-todo-item
+          [todo]="todo"
+          (onToggle)="toggleTodo(todo)"
+          (onDelete)="deleteTodo($event)"
+        />
+      }
+    </div>
+
+    @if (results.totalPages > 1) {
+      <div class="pagination">
+        <button class="btn-page" type="button" [disabled]="!results.hasPrev" (click)="onPrevPage()">
+          ← Prev
+        </button>
+
+        @for (page of [].constructor(results.totalPages); track $index) {
+          <button
+            class="btn-page"
+            [class.active]="$index + 1 === results.currentPage"
+            (click)="onPageChange($index + 1)"
+          >
+            {{ $index + 1 }}
+          </button>
+        }
+
+        <button type="button" class="btn-page" [disabled]="!results.hasNext" (click)="onNextPage()">
+          Next →
+        </button>
       </div>
     }
   }

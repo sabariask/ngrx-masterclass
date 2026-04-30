@@ -60,4 +60,18 @@ export class TodoService {
       timeout(5000),
     );
   }
+
+  searchTodos(query: string): Observable<Todo[]> {
+    return this.http
+      .get<Todo[]>(this.apiUrl)
+      .pipe(
+        map((todos) =>
+          todos.filter(
+            (t) =>
+              t.title.toLowerCase().includes(query.toLowerCase()) ||
+              t.description?.toLowerCase().includes(query.toLowerCase()),
+          ),
+        ),
+      );
+  }
 }
