@@ -26,6 +26,11 @@ export const TodoActions = createActionGroup({
         'Toggle Todo Success': props<{ id: number, completed: boolean }>(),
         'Toggle Todo Failure': props<{ error: string }>(),
 
+        //Update Title
+        'Update Todo Title': props<{ id: number, title: string }>(),
+        'Update Todo Titile Success': props<{ todo: Todo }>(),
+        'Update Todo Titile Failure': props<{ error: string }>(),
+
         'Clear All Todos': emptyProps(),
 
         'Set Filter': props<{ filter: 'all' | 'pending' | 'completed' | 'high' }>(),

@@ -1,5 +1,8 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ComponentStore } from '@ngrx/component-store';
+import { debounceTime, distinctUntilChanged, EMPTY, Observable, switchMap, tap } from 'rxjs';
+import { TodoService } from '../../../services/todo.service';
+import { tapResponse } from '@ngrx/operators';
 
 export interface FilterState {
   searchText: string;
@@ -8,6 +11,8 @@ export interface FilterState {
   dueDateFrom: string | null;
   dueDateTo: string | null;
   showFilters: boolean;
+  suggestions: string[];
+  suggestionLoading: boolean;
 }
 
 const initialFilterState: FilterState = {
@@ -17,10 +22,14 @@ const initialFilterState: FilterState = {
   dueDateFrom: null,
   dueDateTo: null,
   showFilters: false,
+  suggestions: [],
+  suggestionLoading: false,
 };
 
 @Injectable()
 export class TodoFilterStore extends ComponentStore<FilterState> {
+  todoService = inject(TodoService);
+
   constructor() {
     super(initialFilterState);
   }
@@ -29,6 +38,8 @@ export class TodoFilterStore extends ComponentStore<FilterState> {
   readonly priority$ = this.select((s) => s.priority);
   readonly status$ = this.select((s) => s.status);
   readonly showFilters$ = this.select((s) => s.showFilters);
+  readonly suggestion$ = this.select((s) => s.suggestions);
+  readonly suggestLoading$ = this.select((s) => s.suggestionLoading);
 
   readonly activeFilterCount$ = this.select(
     this.priority$,
@@ -77,7 +88,62 @@ export class TodoFilterStore extends ComponentStore<FilterState> {
     showFilters: !state.showFilters,
   }));
 
+  // readonly setSuggestions = this.updater((state, suggestions: string[]) => ({
+  //   ...state,
+  //   suggestions,
+  //   suggestionLoading: false,
+  // }));
+
+  // readonly clearSuggestions = this.updater((state) => ({
+  //   ...state,
+  //   suggestions: [],
+  //   suggestionLoading: false,
+  // }));
+
   readonly clearAllFilters = this.updater((state) => ({
     ...initialFilterState,
   }));
+
+  readonly searchEffect = this.effect((searchText$: Observable<string>) =>
+    searchText$.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      tap(() => this.patchState({ suggestionLoading: true })),
+      switchMap((text) => {
+        if (!text.trim()) {
+          this.patchState({ suggestionLoading: true });
+          return EMPTY;
+        }
+
+        return this.todoService.searchTodos(text).pipe(
+          tapResponse(
+            (todos) => {
+              const suggestions = todos.map((t) => t.title);
+              this.patchState({ suggestions: todos.map((t) => t.title), suggestionLoading: false });
+            },
+            (error) => {
+              console.error('Search error:', error);
+              this.patchState({ suggestionLoading: false, suggestions: [] });
+            },
+          ),
+        );
+      }),
+    ),
+  );
+
+  readonly initFilters = this.effect<void>((trigger$: Observable<void>) =>
+    trigger$.pipe(
+      switchMap(() =>
+        this.todoService.getAllTodos().pipe(
+          tapResponse(
+            (todos) => {
+              const priorities = [...new Set(todos.map((t) => t.priority))];
+              console.log('Available priorities:', priorities);
+            },
+            (error) => console.error('Init Error:', error),
+          ),
+        ),
+      ),
+    ),
+  );
 }

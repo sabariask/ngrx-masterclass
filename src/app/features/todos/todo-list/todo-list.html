@@ -14,7 +14,12 @@
 
   @if (showFilters$ | async) {
     <div class="filter-panel">
-      <input type="text" class="filter-input" (input)="onSearch($any($event.target)?.value)" />
+      <input
+        type="text"
+        class="filter-input"
+        placeholder="Please enter a text to filter the title"
+        (input)="onSearch($any($event.target)?.value)"
+      />
 
       <div class="filter-group">
         <label for="priority">Priority:</label>
@@ -98,26 +103,32 @@
       }
     </div>
 
-    @if (results.totalPages > 1) {
-      <div class="pagination">
-        <button class="btn-page" type="button" [disabled]="!results.hasPrev" (click)="onPrevPage()">
-          ← Prev
-        </button>
-
-        @for (page of [].constructor(results.totalPages); track $index) {
-          <button
-            class="btn-page"
-            [class.active]="$index + 1 === results.currentPage"
-            (click)="onPageChange($index + 1)"
-          >
-            {{ $index + 1 }}
+    @if (paginationStore.vm$ | async; as pvm) {
+      @if (pvm.totalPages > 1) {
+        <div class="pagination">
+          <button class="btn-page" type="button" [disabled]="!pvm.hasPrev" (click)="onPrevPage()">
+            ← Prev
           </button>
-        }
 
-        <button type="button" class="btn-page" [disabled]="!results.hasNext" (click)="onNextPage()">
-          Next →
-        </button>
-      </div>
+          @for (page of [].constructor(pvm.totalPages); track $index) {
+            <button
+              class="btn-page"
+              [class.active]="$index + 1 === pvm.currentPage"
+              (click)="onPageChange($index + 1)"
+            >
+              {{ $index + 1 }}
+            </button>
+          }
+
+          <button type="button" class="btn-page" [disabled]="!pvm.hasNext" (click)="onNextPage()">
+            Next →
+          </button>
+        </div>
+
+        <p class="pagination-info">
+          Page {{ pvm.currentPage }} of {{ pvm.totalPages }} ({{ pvm.totalCount }} total items)
+        </p>
+      }
     }
   }
 </div>

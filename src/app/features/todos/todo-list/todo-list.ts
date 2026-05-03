@@ -30,6 +30,8 @@ export class TodoList implements OnInit {
   filterStore = inject(TodoFilterStore);
 
   allTodos$ = this.store.select(TodoSelectors.selectAllTodos);
+
+  // Global Store
   loading$ = this.store.select(TodoSelectors.selectTodosLoading);
   counts$ = this.store.select(TodoSelectors.selectTodosCount);
   error$ = this.store.select(TodoSelectors.selectTodosError);
@@ -39,6 +41,8 @@ export class TodoList implements OnInit {
   hasActiveFilterCount$ = this.filterStore.hasActiveFilters$;
   activeFilterCount$ = this.filterStore.activeFilterCount$;
   paginationVm$ = this.paginationStore.vm$;
+  suggestion$ = this.filterStore.suggestion$;
+  suggestionLoading$ = this.filterStore.suggestLoading$;
 
   filteredPaginatedTodos$!: Observable<any>;
 
@@ -125,6 +129,7 @@ export class TodoList implements OnInit {
 
   onSearch(text: string) {
     this.filterStore.setSearchText(text);
+    this.filterStore.searchEffect(text);
     this.paginationStore.setPage(1);
   }
 

@@ -3,6 +3,7 @@ import { ComponentStore } from '@ngrx/component-store';
 import { Todo } from '../../../models/todo.model';
 import { debounceTime, distinctUntilChanged, EMPTY, map, Observable, switchMap, tap } from 'rxjs';
 import { TodoService } from '../../../services/todo.service';
+import { tapResponse } from '@ngrx/operators';
 
 export interface PaginationState {
   currentPage: number;
@@ -10,6 +11,7 @@ export interface PaginationState {
   searchQuery: string;
   sortBy: 'createdAt' | 'priority' | 'title';
   sortOrder: 'asc' | 'desc';
+  totalCount: number;
 }
 
 const initialState: PaginationState = {
@@ -18,6 +20,7 @@ const initialState: PaginationState = {
   searchQuery: '',
   sortBy: 'createdAt',
   sortOrder: 'asc',
+  totalCount: 0,
 };
 
 @Injectable()
@@ -26,7 +29,22 @@ export class TodoPaginationStore extends ComponentStore<PaginationState> {
 
   constructor() {
     super(initialState);
+
+    this.loadInitialData();
   }
+
+  private loadInitialData = this.effect((trigger$) =>
+    trigger$.pipe(
+      switchMap(() =>
+        this.todoService.getAllTodos().pipe(
+          tapResponse(
+            (todos) => this.setTotalCount(todos.length),
+            (error) => console.error(error),
+          ),
+        ),
+      ),
+    ),
+  );
 
   readonly currentPage$ = this.select((state) => state.currentPage);
 
@@ -37,6 +55,12 @@ export class TodoPaginationStore extends ComponentStore<PaginationState> {
   readonly sortBy$ = this.select((state) => state.sortBy);
 
   readonly sortOrder$ = this.select((state) => state.sortOrder);
+
+  readonly totalCount$ = this.select((state) => state.totalCount);
+
+  readonly totalPages$ = this.select(this.totalCount$, this.pageSize$, (total, size) =>
+    Math.ceil(total / size),
+  );
 
   readonly paginationInfo$ = this.select(
     this.currentPage$,
@@ -52,15 +76,21 @@ export class TodoPaginationStore extends ComponentStore<PaginationState> {
   readonly vm$ = this.select(
     this.currentPage$,
     this.pageSize$,
+    this.totalCount$,
+    this.totalPages$,
     this.searchQuery$,
     this.sortBy$,
     this.sortOrder$,
-    (currentPage, pageSize, searchQuery, sortBy, sortOrder) => ({
+    (currentPage, pageSize, totalCount, totalPages, searchQuery, sortBy, sortOrder) => ({
       currentPage,
       pageSize,
+      totalCount,
+      totalPages,
       searchQuery,
       sortBy,
       sortOrder,
+      hasNext: currentPage < totalPages,
+      hasPrev: currentPage > 1,
     }),
   );
 
@@ -74,6 +104,8 @@ export class TodoPaginationStore extends ComponentStore<PaginationState> {
     pageSize,
     currentPage: 1,
   }));
+
+  readonly setTotalCount = this.updater((state, totalCount: number) => ({ ...state, totalCount }));
 
   readonly setSearchQuery = this.updater((state, searchQuery: string) => ({
     ...state,
@@ -133,6 +165,23 @@ export class TodoPaginationStore extends ComponentStore<PaginationState> {
     );
   }
 
+  getCurrentPage(): number {
+    return this.get((state) => state.currentPage);
+  }
+
+  getPageRange() {
+    return this.get((state) => ({
+      start: (state.currentPage - 1) * state.pageSize,
+      end: state.currentPage * state.pageSize,
+    }));
+  }
+
+  goToNextPageAndLoad() {
+    const current = this.getCurrentPage();
+    this.setPage(current + 1);
+    console.log('Loading Page', current + 1);
+  }
+
   readonly searchTodos = this.effect((searchText$: Observable<string>) =>
     searchText$.pipe(
       debounceTime(300),
@@ -153,4 +202,9 @@ export class TodoPaginationStore extends ComponentStore<PaginationState> {
       }),
     ),
   );
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    console.log('PaginationStore desstoryed - all subscriptions cleaned');
+  }
 }

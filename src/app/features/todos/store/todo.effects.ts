@@ -193,6 +193,18 @@ export class TodoEffects {
     ),
   );
 
+  updateTodoTitle$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TodoActions.updateTodoTitle),
+      mergeMap(({ id, title }) =>
+        this.todoService.updateTodoTitle(id, title).pipe(
+          map((todo) => TodoActions.updateTodoTitileSuccess({ todo })),
+          catchError((error) => of(TodoActions.updateTodoTitileFailure({ error }))),
+        ),
+      ),
+    ),
+  );
+
   private getErrorMessage(error: any): string {
     if (error.name === 'TimeoutError') {
       return 'Request timed out. Please check your connection.';

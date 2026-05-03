@@ -82,18 +82,42 @@ export const todoReducer = createReducer(
   })),
 
   //Clear All
-  on(TodoActions.clearAllTodos, (state) => adapter.removeAll({
+  on(TodoActions.clearAllTodos, (state) =>
+    adapter.removeAll({
+      ...state,
+      error: null,
+    }),
+  ),
+
+  on(TodoActions.setFilter, (state, { filter }) => ({
     ...state,
-    error: null
+    filter,
   })),
 
-  on(TodoActions.setFilter, (state, { filter })=> ({
+  on(TodoActions.selectTodo, (state, { id }) => ({
     ...state,
-    filter
+    selectedId: id,
   })),
 
-  on(TodoActions.selectTodo, (state, { id })=> ({
+  on(TodoActions.updateTodoTitle, (state) => ({
     ...state,
-    selectedId: id
-  }))
+    loading: true,
+    error: null,
+  })),
+
+  on(TodoActions.updateTodoTitileSuccess, (state, { todo }) =>
+    adapter.updateOne(
+      {
+        id: todo.id,
+        changes: { title: todo.title },
+      },
+      { ...state, loading: false, error: null },
+    ),
+  ),
+
+  on(TodoActions.updateTodoTitileFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error,
+  })),
 );
