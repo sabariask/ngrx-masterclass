@@ -1,37 +1,69 @@
 <div class="todo-item" [class.completed]="todo.completed">
   <div class="priority-bar priority-{{ todo.priority }}"></div>
 
-  <div class="todo-body">
-    <div class="todo-header">
-      <a [routerLink]="['/todos', todo.id]">
-        <h4 [class.strikethrough]="todo.completed">{{ todo.id }} — {{ todo.title }}</h4>
+  <div class="todo-content">
+    @if (!isEditing()) {
+      <a [routerLink]="['/todos', todo.id]" class="todo-title-link">
+        <h4 [class.strikethrough]="todo.completed">
+          {{ todo.title }}
+        </h4>
       </a>
-      <span class="priority-tag priority-{{ todo.priority }}">
-        {{ todo.priority }}
-      </span>
-    </div>
+      @if (todo.description) {
+        <p class="description">
+          {{ todo.description }}
+        </p>
+      }
 
-    @if (todo.description) {
-      <p class="description">
-        {{ todo.description }}
-      </p>
+      @if (todo.dueDate) {
+        <small class="due-date">📅 Due: {{ todo.dueDate }}</small>
+      }
     }
 
-    @if (todo.dueDate) {
-      <small class="due-date">📅 Due: {{ todo.dueDate }}</small>
+    @if (isEditing()) {
+      <div class="edit-form">
+        <input
+          type="text"
+          class="edit-input"
+          [value]="editTitle()"
+          (input)="editTitle.set($any($event.target).value)"
+          (keyup.enter)="saveEdit()"
+          (keyup.escape)="cancelEdit()"
+          autofocus
+        />
+
+        <div class="edit-actions">
+          <button class="btn-save" (click)="saveEdit()" type="button">✅ Save</button>
+          <button class="btn-cancel" type="button" (click)="cancelEdit()">✕ Cancel</button>
+        </div>
+      </div>
     }
   </div>
 
   <div class="todo-actions">
     <button
+      class="btn-action btn-edit"
       type="button"
-      class="btn-toggle"
-      (click)="toggle()"
+      (click)="startEdit(); $event.stopPropagation()"
+      title="Edit Title"
+    >
+      ✏️
+    </button>
+    <button
+      type="button"
+      class="btn-action btn-toggle"
+      (click)="toggle(); $event.stopPropagation()"
       [title]="todo.completed ? 'Mark Pending' : 'Mark Complete'"
     >
       {{ todo.completed ? '↩️' : '✅' }}
     </button>
 
-    <button type="button" class="btn-delete" (click)="delete()" title="delete">🗑️</button>
+    <button
+      type="button"
+      class="btn-action btn-delete"
+      (click)="delete(); $event.stopPropagation()"
+      title="delete"
+    >
+      🗑️
+    </button>
   </div>
 </div>

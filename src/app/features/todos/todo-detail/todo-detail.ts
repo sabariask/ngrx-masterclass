@@ -27,7 +27,10 @@ export class TodoDetail {
 
     this.todo$ = this.store.select(selectTodoIdFromRoute).pipe(
       filter((id) => id !== null),
-      switchMap((id) => this.store.select(TodoSelectors.selectTodoById(id!))),
+      switchMap((id) => {
+        console.log('Loading todo with id:', id);
+        return this.store.select(TodoSelectors.selectTodoById(id!))
+      }),
     );
 
     this.loading$ = this.store.select(TodoSelectors.selectTodosLoading);

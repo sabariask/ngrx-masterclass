@@ -60,26 +60,15 @@ export const todoReducer = createReducer(
   })),
 
   // Toggle todo
-  on(TodoActions.toggleTodo, (state) => ({
-    ...state,
-    loading: true,
-    error: null,
-  })),
-  on(TodoActions.toggleTodoSuccess, (state, { id, completed }) =>
-    adapter.updateOne(
-      { id, changes: { completed } },
-      {
-        ...state,
-        loading: false,
-        error: null,
-      },
-    ),
+  on(TodoActions.toggleTodo, (state, { id, completed }) =>
+    adapter.updateOne({ id, changes: { completed: !completed } }, { ...state, error: null }),
   ),
-  on(TodoActions.toggleTodoFailure, (state, { error }) => ({
+  on(TodoActions.toggleTodoSuccess, (state) => ({
     ...state,
-    loading: false,
-    error,
   })),
+  on(TodoActions.toggleTodoFailure, (state, { id, previousCompleted, error }) =>
+    adapter.updateOne({ id, changes: { completed: previousCompleted } }, { ...state, error }),
+  ),
 
   //Clear All
   on(TodoActions.clearAllTodos, (state) =>
@@ -99,25 +88,15 @@ export const todoReducer = createReducer(
     selectedId: id,
   })),
 
-  on(TodoActions.updateTodoTitle, (state) => ({
-    ...state,
-    loading: true,
-    error: null,
-  })),
-
-  on(TodoActions.updateTodoTitileSuccess, (state, { todo }) =>
-    adapter.updateOne(
-      {
-        id: todo.id,
-        changes: { title: todo.title },
-      },
-      { ...state, loading: false, error: null },
-    ),
+  on(TodoActions.updateTodoTitle, (state, { id, title }) =>
+    adapter.updateOne({ id, changes: { title } }, { ...state, error: null }),
   ),
 
-  on(TodoActions.updateTodoTitileFailure, (state, { error }) => ({
+  on(TodoActions.updateTodoTitileSuccess, (state) => ({
     ...state,
-    loading: false,
-    error,
   })),
+
+  on(TodoActions.updateTodoTitileFailure, (state, { id, previousTitle, error }) =>
+    adapter.updateOne({ id, changes: { title: previousTitle } }, { ...state, error }),
+  ),
 );

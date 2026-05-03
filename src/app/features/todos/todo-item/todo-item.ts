@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, signal } from '@angular/core';
 import { Todo } from '../../../models/todo.model';
-import { RouterLink } from "@angular/router";
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-todo-item',
@@ -10,23 +10,14 @@ import { RouterLink } from "@angular/router";
   templateUrl: './todo-item.html',
   styleUrl: './todo-item.scss',
 })
-export class TodoItem implements OnInit {
+export class TodoItem {
   @Input() todo!: Todo;
   @Output() onToggle = new EventEmitter<Todo>();
   @Output() onDelete = new EventEmitter<number>();
+  @Output() onUpdateTitle = new EventEmitter<{ id: number; title: string }>();
 
-  ngOnInit(): void {
-    // this.todo = {
-    //   id: 0,
-    //   title: 'Test',
-    //   description: 'test description',
-    //   completed: true,
-    //   priority: 'low',
-    //   createdAt: new Date().toISOString(),
-    //   userId: 0,
-    //   dueDate: new Date().toISOString()
-    // }
-  }
+  isEditing = signal(false);
+  editTitle = signal('');
 
   toggle(): void {
     this.onToggle.emit(this.todo);
@@ -34,5 +25,31 @@ export class TodoItem implements OnInit {
 
   delete(): void {
     this.onDelete.emit(this.todo.id);
+  }
+
+  startEdit() {
+    this.isEditing.set(true);
+    this.editTitle.set(this.todo.title);
+  }
+
+  saveEdit() {
+    const newTitle = this.editTitle().trim();
+    if (!newTitle) {
+      this.cancelEdit();
+      return;
+    }
+
+    if (newTitle === this.todo.title) {
+      this.isEditing.set(false);
+      return;
+    }
+
+    this.onUpdateTitle.emit({ id: this.todo.id, title: newTitle });
+    this.isEditing.set(false);
+  }
+
+  cancelEdit() {
+    this.isEditing.set(false);
+    this.editTitle.set('');
   }
 }

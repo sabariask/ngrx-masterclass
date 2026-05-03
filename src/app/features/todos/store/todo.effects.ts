@@ -19,6 +19,7 @@ import { ToastService } from '../../../services/toast.service';
 import { TodoService } from '../../../services/todo.service';
 import { ROUTER_NAVIGATED } from '@ngrx/router-store';
 import { selectTodoIdFromRoute } from '../../../store/router/router.selectors';
+import * as TodoSelectors from '../store/todo.selectors';
 
 @Injectable()
 export class TodoEffects {
@@ -136,20 +137,25 @@ export class TodoEffects {
   toggleTodo$ = createEffect(() =>
     this.actions$.pipe(
       ofType(TodoActions.toggleTodo),
-      mergeMap(({ id, completed }) =>
-        this.todoService.toggleTodo(id, !completed).pipe(
+      withLatestFrom(this.store.select(TodoSelectors.selectTodosEntities)),
+      mergeMap(([{ id, completed }, entities]) => {
+        const previousCompleted = completed;
+
+        return this.todoService.toggleTodo(id, !completed).pipe(
           map((updated) =>
             TodoActions.toggleTodoSuccess({ id: updated.id, completed: updated.completed }),
           ),
           catchError((error) =>
             of(
               TodoActions.toggleTodoFailure({
+                id,
+                previousCompleted,
                 error: this.getErrorMessage(error),
               }),
             ),
           ),
-        ),
-      ),
+        );
+      }),
     ),
   );
 
@@ -196,13 +202,41 @@ export class TodoEffects {
   updateTodoTitle$ = createEffect(() =>
     this.actions$.pipe(
       ofType(TodoActions.updateTodoTitle),
-      mergeMap(({ id, title }) =>
-        this.todoService.updateTodoTitle(id, title).pipe(
+      withLatestFrom(this.store.select(TodoSelectors.selectTodosEntities)),
+      mergeMap(([{ id, title }, entities]) => {
+        const previousTitle = entities[id]?.title ?? '';
+        return this.todoService.updateTodoTitle(id, title).pipe(
           map((todo) => TodoActions.updateTodoTitileSuccess({ todo })),
-          catchError((error) => of(TodoActions.updateTodoTitileFailure({ error }))),
-        ),
-      ),
+          catchError((error) =>
+            of(
+              TodoActions.updateTodoTitileFailure({
+                id,
+                previousTitle,
+                error: this.getErrorMessage(error),
+              }),
+            ),
+          ),
+        );
+      }),
     ),
+  );
+
+  updateTitleSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(TodoActions.updateTodoTitileSuccess),
+        tap(() => this.toast.success('Title updated! ✅')),
+      ),
+    { dispatch: false },
+  );
+
+  updateTitleFailure$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(TodoActions.updateTodoTitileFailure),
+        tap(({ error }) => this.toast.error('Update failed: ${error}. Title reverted. ↩️')),
+      ),
+    { dispatch: false },
   );
 
   private getErrorMessage(error: any): string {

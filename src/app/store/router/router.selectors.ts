@@ -1,4 +1,4 @@
-import { getRouterSelectors, RouterReducerState } from '@ngrx/router-store';
+import { RouterReducerState } from '@ngrx/router-store';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { RouterStateUrl } from './custom-route-serializer';
 

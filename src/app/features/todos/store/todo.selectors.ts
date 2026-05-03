@@ -5,6 +5,7 @@ export const selectTodoState = createFeatureSelector<TodoState>('todos');
 
 export const selectAllTodos = createSelector(selectTodoState, (state) => {
   if (!state) return [];
+  console.log('selectAllTodos state:', state);
   return adapter.getSelectors().selectAll(state);
 });
 
@@ -71,7 +72,7 @@ export const selectTodosGroupByPriority = createSelector(selectAllTodos, (todos)
 }));
 
 export const selectTodoById = (id: number) =>
-  createSelector(selectAllTodos, (todos) => todos.find((t) => t.id === id) ?? null);
+  createSelector(selectAllTodos, (todos) => todos.find((t) => Number(t.id) === id) ?? null);
 
 export const selectTodosByPriority = (priority: 'low' | 'medium' | 'high') =>
   createSelector(selectAllTodos, (todos) => todos.filter((t) => t.priority === priority));
