@@ -105,6 +105,7 @@ export class TodoList implements OnInit {
 
     this.newTitle = '';
     this.newPriority = 'medium';
+    this.newDescription = '';
   }
 
   updateTodoTitle(event: { id: number; title: string }) {

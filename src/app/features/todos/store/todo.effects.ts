@@ -20,7 +20,6 @@ import { TodoService } from '../../../services/todo.service';
 import { ROUTER_NAVIGATED } from '@ngrx/router-store';
 import { selectTodoIdFromRoute } from '../../../store/router/router.selectors';
 import * as TodoSelectors from '../store/todo.selectors';
-
 @Injectable()
 export class TodoEffects {
   actions$ = inject(Actions);
@@ -137,8 +136,7 @@ export class TodoEffects {
   toggleTodo$ = createEffect(() =>
     this.actions$.pipe(
       ofType(TodoActions.toggleTodo),
-      withLatestFrom(this.store.select(TodoSelectors.selectTodosEntities)),
-      mergeMap(([{ id, completed }, entities]) => {
+      mergeMap(({ id, completed }) => {
         const previousCompleted = completed;
 
         return this.todoService.toggleTodo(id, !completed).pipe(
@@ -166,6 +164,15 @@ export class TodoEffects {
         tap(({ completed }) =>
           this.toast.success(completed ? 'Task completed! 🎉' : 'Task marked as pending'),
         ),
+      ),
+    { dispatch: false },
+  );
+
+  toggleTodoFailure$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(TodoActions.toggleTodoFailure),
+        tap(({ error }) => this.toast.error(`Toggle Failed: ${error}. Change reverted`)),
       ),
     { dispatch: false },
   );
@@ -234,7 +241,7 @@ export class TodoEffects {
     () =>
       this.actions$.pipe(
         ofType(TodoActions.updateTodoTitileFailure),
-        tap(({ error }) => this.toast.error('Update failed: ${error}. Title reverted. ↩️')),
+        tap(({ error }) => this.toast.error(`Update failed: ${error}. Title reverted. ↩️`)),
       ),
     { dispatch: false },
   );

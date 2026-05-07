@@ -7,6 +7,7 @@ import { selectAuthUser } from '../../../store/auth/auth.selectors';
 import { tapResponse } from '@ngrx/operators';
 import { TodoActions } from './todo.actions';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Todo } from '../../../models/todo.model';
 
 export interface LocalTodoState {
   editingId: number | null;
@@ -65,7 +66,7 @@ export class LocalTodoStore extends ComponentStore<LocalTodoState> {
 
         return this.todoService.updateTodoTitle(localState.editingId, localState.editTitle).pipe(
           tapResponse(
-            (updatedTodo) => {
+            (updatedTodo: Todo) => {
               this.globalStore.dispatch(TodoActions.updateTodoTitileSuccess({ todo: updatedTodo }));
               this.patchState({
                 editingId: null,

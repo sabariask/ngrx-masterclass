@@ -32,7 +32,7 @@ export const TodoActions = createActionGroup({
     'Update Todo Title': props<{ id: number; title: string }>(),
     'Update Todo Titile Success': props<{ todo: Todo }>(),
     'Update Todo Titile Failure': props<{ id: number; previousTitle: string; error: string }>(),
-
+    
     'Clear All Todos': emptyProps(),
 
     'Set Filter': props<{ filter: 'all' | 'pending' | 'completed' | 'high' }>(),

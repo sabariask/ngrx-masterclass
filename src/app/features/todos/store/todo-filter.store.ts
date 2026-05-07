@@ -3,6 +3,8 @@ import { ComponentStore } from '@ngrx/component-store';
 import { debounceTime, distinctUntilChanged, EMPTY, Observable, switchMap, tap } from 'rxjs';
 import { TodoService } from '../../../services/todo.service';
 import { tapResponse } from '@ngrx/operators';
+import { Todo } from '../../../models/todo.model';
+import { HttpErrorResponse } from '@angular/common/http';
 
 export interface FilterState {
   searchText: string;
@@ -117,11 +119,11 @@ export class TodoFilterStore extends ComponentStore<FilterState> {
 
         return this.todoService.searchTodos(text).pipe(
           tapResponse(
-            (todos) => {
+            (todos: Todo[]) => {
               const suggestions = todos.map((t) => t.title);
-              this.patchState({ suggestions: todos.map((t) => t.title), suggestionLoading: false });
+              this.patchState({ suggestions: suggestions, suggestionLoading: false });
             },
-            (error) => {
+            (error: HttpErrorResponse) => {
               console.error('Search error:', error);
               this.patchState({ suggestionLoading: false, suggestions: [] });
             },
@@ -136,11 +138,11 @@ export class TodoFilterStore extends ComponentStore<FilterState> {
       switchMap(() =>
         this.todoService.getAllTodos().pipe(
           tapResponse(
-            (todos) => {
+            (todos: Todo[]) => {
               const priorities = [...new Set(todos.map((t) => t.priority))];
               console.log('Available priorities:', priorities);
             },
-            (error) => console.error('Init Error:', error),
+            (error: HttpErrorResponse) => console.error('Init Error:', error),
           ),
         ),
       ),
