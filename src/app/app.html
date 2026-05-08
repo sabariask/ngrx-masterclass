@@ -6,15 +6,18 @@
         <a [routerLink]="'/dashboard'" routerLinkActive="active"> 📊 Dashboard </a>
       </li>
       <li>
-        <a [routerLink]="'/counter'" routerLinkActive="active"> 🔢 Counter </a>
+        <a [routerLink]="'/todos'" routerLinkActive="active"> 📝 Todos </a>
       </li>
       <li>
-        <a [routerLink]="'/todos'" routerLinkActive="active"> 📝 Todos </a>
+        <a [routerLink]="'/analytics'" routerLinkActive="active"> 📈 Analytics </a>
+      </li>
+      <li>
+        <a [routerLink]="'/counter'" routerLinkActive="active"> 🔢 Counter </a>
       </li>
     </ul>
 
     <div class="nav-user">
-      <span>{{ userName$ | async}}</span>
+      <span>👤 {{ userName$ | async }}</span>
       <button class="btn-logout" (click)="logout()">Logout</button>
     </div>
   }

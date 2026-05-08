@@ -1,0 +1,139 @@
+<div class="analytics-page">
+  @if (vm$ | async; as vm) {
+    <div class="analytics-header">
+      <div>
+        <h2>📊 Analytics</h2>
+        <p>{{ vm.greeting }}</p>
+      </div>
+      <div class="score-badge" [style.background]="vm.productivityLabel.color">
+        <span class="score-number">{{ vm.productivityScore }}</span>
+        <span class="score-label">{{ vm.productivityLabel.label }}</span>
+      </div>
+    </div>
+
+    @if (vm.hasOverdue) {
+      <div class="alert alert-danger">
+        ⚠️ You have {{ vm.overdueTodos.length }} overdue
+        {{ vm.overdueTodos.length === 1 ? 'task' : 'tasks' }}!
+        <a routerLink="/todos">View todos →</a>
+      </div>
+    }
+
+    @if (vm.hasDueToday) {
+      <div class="alert alert-warning">
+        📅 {{ vm.todayTodos.length }}
+        {{ vm.todayTodos.length === 1 ? 'task' : 'tasks' }}
+        due Today!
+      </div>
+    }
+
+    @if (vm.isAllDone) {
+      <div class="alert alert-success">🎉 All tasks completed! Great work!</div>
+    }
+
+    <div class="stats-grid">
+      <div class="stat-card primary">
+        <span class="stat-icon">📋</span>
+        <span class="stat-number">{{ vm.counts.total }}</span>
+        <span class="stat-label">Total Tasks</span>
+      </div>
+      <div class="stat-card success">
+        <span class="stat-icon">✅</span>
+        <span class="stat-number">{{ vm.counts.completed }}</span>
+        <span class="stat-label">Completed</span>
+      </div>
+      <div class="stat-card danger">
+        <span class="stat-icon">🔴</span>
+        <span class="stat-number">{{ vm.overdueTodos.length }}</span>
+        <span class="stat-label">Overdue</span>
+      </div>
+    </div>
+
+    <div class="progress-card">
+      <div class="progress-header">
+        <h3>📈 Completion Rate</h3>
+        <span class="progress-percent">{{ vm.completionRate }}%</span>
+      </div>
+      <div class="progress-bar">
+        <div
+          class="progress-fill"
+          [style.width.%]="vm.completionRate"
+          [style.background]="vm.productivityLabel.color"
+        ></div>
+      </div>
+      <small>
+        {{ vm.counts.completed }} of {{ vm.counts.total }}
+        tasks done
+      </small>
+    </div>
+
+    <div class="breakdown-card">
+      <h3>🎯 Priority Breakdown</h3>
+      <div class="priority-bars">
+        <div class="priority-row">
+          <span class="priority-label">High</span>
+          <div class="priority-bar-track">
+            <div class="priority-bar-fill high" [style.width.%]="vm.priorityBreakdown.high"></div>
+          </div>
+          <span class="priority-percent"> {{ vm.priorityBreakdown.high }}% </span>
+          <span class="priority-count">{{ vm.counts.high }}</span>
+        </div>
+        <div class="priority-row">
+          <span class="priority-label">Medium</span>
+          <div class="priority-bar-track">
+            <div
+              class="priority-bar-fill medium"
+              [style.width.%]="vm.priorityBreakdown.medium"
+            ></div>
+          </div>
+          <span class="priority-percent"> {{ vm.priorityBreakdown.medium }}% </span>
+          <span class="priority-count">{{ vm.counts.medium }}</span>
+        </div>
+        <div class="priority-row">
+          <span class="priority-label">Low</span>
+          <div class="priority-bar-track">
+            <div class="priority-bar-fill low" [style.width.%]="vm.priorityBreakdown.low"></div>
+          </div>
+          <span class="priority-percent"> {{ vm.priorityBreakdown.low }}% </span>
+          <span class="priority-count">{{ vm.counts.low }}</span>
+        </div>
+      </div>
+    </div>
+
+    @if (vm.urgentTodos.length > 0) {
+      <div class="urgent-card">
+        <h3>🚨 Urgent Tasks (High Priority)</h3>
+        <div class="urgent-list">
+          @for (todo of vm.urgentTodos; track todo.id) {
+            <div class="urgent-item">
+              <span class="urgent-dot"></span>
+              <span class="urgent-title">{{ todo.title }}</span>
+              @if (todo.dueDate) {
+                <span class="urgent-date"> 📅 {{ todo.dueDate }} </span>
+              }
+            </div>
+          }
+        </div>
+        <a routerLink="/todos" class="view-all-link">View all todos →</a>
+      </div>
+    }
+
+    <div class="weekly-card">
+      <h3>📅 This Week</h3>
+      <div class="weekly-bars">
+        @for (day of vm.weeklyProgress; track day.day) {
+          <div class="day-column">
+            <div class="day-bar-wrap">
+              <div
+                class="day-bar-fill"
+                [style.height.%]="day.total > 0 ? (day.completed / day.total) * 100 : 0"
+              ></div>
+            </div>
+            <span class="day-label">{{ day.day }}</span>
+            <span class="day-count">{{ day.completed }} / {{ day.total }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

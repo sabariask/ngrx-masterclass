@@ -31,6 +31,11 @@ export const routes: Routes = [
       import('../app/features/counter/counter.routes').then((m) => m.COUNTER_ROUTES),
   },
   {
+    path: 'analytics',
+    canActivate: [authGuard],
+    loadComponent: () => import('./analytics/analytics').then((m) => m.Analytics),
+  },
+  {
     path: '**',
     redirectTo: 'dashboard',
   },

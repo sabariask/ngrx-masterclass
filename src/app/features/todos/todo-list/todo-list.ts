@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { combineLatest, map, Observable } from 'rxjs';
+import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { Todo } from '../../../models/todo.model';
 import { AppState } from '../../../state/app.state';
 import { Store } from '@ngrx/store';
@@ -45,6 +45,21 @@ export class TodoList implements OnInit {
   suggestionLoading$ = this.filterStore.suggestLoading$;
 
   filteredPaginatedTodos$!: Observable<any>;
+
+  completionRate$ = this.store
+    .select(TodoSelectors.selectCompletionRate)
+    .pipe(distinctUntilChanged());
+
+  checkCounts$ = this.store
+    .select(TodoSelectors.selectTodosCount)
+    .pipe(
+      distinctUntilChanged(
+        (prev, curr) =>
+          prev.total === curr.total &&
+          prev.completed === curr.completed &&
+          prev.pending === curr.pending,
+      ),
+    );
 
   constructor() {
     this.filteredPaginatedTodos$ = combineLatest([
