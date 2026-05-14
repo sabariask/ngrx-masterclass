@@ -1,6 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TodoList } from './todo-list';
+import { provideRouter } from '@angular/router';
+import { todoReducer } from '../store/todo.reducer';
+import { provideStore } from '@ngrx/store';
 
 describe('TodoList', () => {
   let component: TodoList;
@@ -8,7 +11,8 @@ describe('TodoList', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TodoList]
+      imports: [TodoList],
+      providers: [provideStore({ todos: todoReducer }), provideRouter([])],
     })
     .compileComponents();
 

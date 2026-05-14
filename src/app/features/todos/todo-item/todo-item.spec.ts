@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TodoItem } from './todo-item';
+import { provideRouter } from '@angular/router';
 
 describe('TodoItem', () => {
   let component: TodoItem;
@@ -8,9 +9,9 @@ describe('TodoItem', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TodoItem]
-    })
-    .compileComponents();
+      imports: [TodoItem],
+      providers: [provideRouter([])],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(TodoItem);
     component = fixture.componentInstance;

@@ -11,7 +11,14 @@ import { RouterLink } from '@angular/router';
   styleUrl: './todo-item.scss',
 })
 export class TodoItem {
-  @Input() todo!: Todo;
+  @Input() todo: Todo = {
+    id: 0,
+    title: '',
+    completed: false,
+    priority: 'low',
+    createdAt: '',
+    userId: 0
+  };
   @Output() onToggle = new EventEmitter<Todo>();
   @Output() onDelete = new EventEmitter<number>();
   @Output() onUpdateTitle = new EventEmitter<{ id: number; title: string }>();

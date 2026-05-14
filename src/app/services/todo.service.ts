@@ -5,7 +5,7 @@ import { Todo } from '../models/todo.model';
 
 @Injectable({ providedIn: 'root' })
 export class TodoService {
-  private apiUrl = 'http://localhost:3000/todos';
+  private apiUrl = 'http://localhost:4000/todos';
   private http = inject(HttpClient);
 
   getMockTodos(): Observable<Todo[]> {
