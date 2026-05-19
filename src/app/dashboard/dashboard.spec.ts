@@ -3,6 +3,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Dashboard } from './dashboard';
 import { provideStore } from '@ngrx/store';
 import { provideRouter } from '@angular/router';
+import { authReducer } from '../store/auth/auth.reducer';
+import { todoReducer } from '../features/todos/store/todo.reducer';
 
 describe('Dashboard', () => {
   let component: Dashboard;
@@ -11,7 +13,10 @@ describe('Dashboard', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Dashboard],
-      providers: [provideRouter([]), provideStore({})],
+      providers: [
+        provideRouter([]),
+        provideStore({ auth: authReducer, todos: todoReducer }),
+      ],
     })
     .compileComponents();
 

@@ -3,15 +3,21 @@ import { AuthState } from './auth.state';
 
 export const selectAuthState = createFeatureSelector<AuthState>('auth');
 
-export const selectAuthUser = createSelector(selectAuthState, (state) => state.user);
+export const selectAuthUser = createSelector(selectAuthState, (state) => state?.user ?? null);
 
-export const selectAuthToken = createSelector(selectAuthState, (state) => state.token);
+export const selectAuthToken = createSelector(selectAuthState, (state) => state?.token ?? null);
 
-export const selectIsLoggedIn = createSelector(selectAuthState, (state) => state.isLoggedIn);
+export const selectIsLoggedIn = createSelector(
+  selectAuthState,
+  (state) => state?.isLoggedIn ?? false,
+);
 
-export const selectAuthLoading = createSelector(selectAuthState, (state) => state.loading);
+export const selectAuthLoading = createSelector(
+  selectAuthState,
+  (state) => state?.loading ?? false,
+);
 
-export const selectAuthError = createSelector(selectAuthState, (state) => state.error);
+export const selectAuthError = createSelector(selectAuthState, (state) => state?.error ?? null);
 
 export const selectUserRole = createSelector(selectAuthUser, (user) => user?.role ?? 'guest');
 
@@ -21,5 +27,5 @@ export const selectIsAdmin = createSelector(selectAuthUser, (user) => user?.role
 
 export const selectAuthInitialized = createSelector(
   selectAuthState,
-  (state) => state.initialized,
+  (state) => state?.initialized ?? false,
 );

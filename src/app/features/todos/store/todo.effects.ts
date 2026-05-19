@@ -31,7 +31,7 @@ export class TodoEffects {
     this.actions$.pipe(
       ofType(TodoActions.loadTodos),
       switchMap(() =>
-        this.todoService.getMockTodos().pipe(
+        this.todoService.getAllTodos().pipe(
           map((todos) => TodoActions.loadTodosSuccess({ todos })),
           catchError((error) => {
             const message = this.getErrorMessage(error);
@@ -64,14 +64,12 @@ export class TodoEffects {
             userId: 1,
           })
           .pipe(
-            map(
-              (todo) => TodoActions.addTodoSuccess({ todo }),
-              catchError((error) =>
-                of(
-                  TodoActions.addTodoFailure({
-                    error: this.getErrorMessage(error),
-                  }),
-                ),
+            map((todo) => TodoActions.addTodoSuccess({ todo })),
+            catchError((error) =>
+              of(
+                TodoActions.addTodoFailure({
+                  error: this.getErrorMessage(error),
+                }),
               ),
             ),
           ),
