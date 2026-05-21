@@ -1,0 +1,113 @@
+<div class="todo-page">
+  <div class="page-header">
+    <h2>📝 Todos (Signal Store)</h2>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <span class="stat-number">
+        {{ store.todosCount().total }}
+      </span>
+      <span class="stat-label">Total</span>
+    </div>
+    <div class="stat-card success">
+      <span class="stat-number">
+        {{ store.todosCount().completed }}
+      </span>
+      <span class="stat-label">Done</span>
+    </div>
+    <div class="stat-card warning">
+      <span class="stat-number">
+        {{ store.todosCount().pending }}
+      </span>
+      <span class="stat-label">Pending</span>
+    </div>
+    <div class="stat-card danger">
+      <span class="stat-number">
+        {{ store.highPriorityTodos().length }}
+      </span>
+      <span class="stat-label">Urgent</span>
+    </div>
+  </div>
+
+  <div class="filter-tabs">
+    @for (f of ['all', 'pending', 'completed', 'high']; track f) {
+      <button
+        type="button"
+        class="filter-tab"
+        [class.active]="store.filter() === f"
+        (click)="setFilter(f)"
+      >
+        {{ f | titlecase }}
+      </button>
+    }
+  </div>
+
+  <div class="add-form">
+    <input
+      type="text"
+      [(ngModel)]="newTitle"
+      placeholder="Add a new task..."
+      (keyup.enter)="addTodo()"
+      class="input-title"
+    />
+    <select [(ngModel)]="newPriority" class="select-priority">
+      <option value="low">🟢 Low</option>
+      <option value="medium">🟠 Medium</option>
+      <option value="high">🔴 High</option>
+    </select>
+    <button class="btn-add" type="button" (click)="addTodo()">+ Add</button>
+  </div>
+
+  @if (store.loading()) {
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Loading...</p>
+    </div>
+  }
+
+  @if (store.error()) {
+    <div class="error-state">
+      ❌ {{ store.error() }}
+      <button type="button" (click)="store.clearError()">✕</button>
+    </div>
+  }
+
+  <div class="progress-card">
+    <div class="progress-header">
+      <span>Completion Rate</span>
+      <span class="progress-percent">{{ store.completionRate() }}%</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" [style.width.%]="store.completionRate()"></div>
+    </div>
+  </div>
+
+  <div class="todo-list">
+    @for (todo of store.filteredTodos(); track todo.id) {
+      <div class="todo-item" [class.completed]="todo.completed">
+        <div class="priority-bar priority-{{ todo.priority }}"></div>
+        <div class="todo-content">
+          <h4 [class.strikethrough]="todo.completed">
+            {{ todo.title }}
+          </h4>
+          @if (todo.description) {
+            <p>{{ todo.description }}</p>
+          }
+        </div>
+        <div class="todos-actions">
+          <button type="button" (click)="toggleTodo(todo); $event.stopPropagation()">
+            {{ todo.completed ? '↩️' : '✅' }}
+          </button>
+          <button type="button" (click)="deleteTodo(todo.id); $event.stopPropagation()">🗑️</button>
+        </div>
+      </div>
+    }
+
+    @if (store.filteredTodos().length === 0 && !store.loading()) {
+      <div class="empty-state">
+        <p>🎉 No todos found!</p>
+      </div>
+    }
+  </div>
+</div>

@@ -6,7 +6,7 @@ import { User } from "../models/user.model";
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
-    private apiUrl = "http://localhost:4000/users";
+    private apiUrl = "http://localhost:3000/users";
     private http = inject(HttpClient);
 
     getMockUser(id: number = 1): Observable<User> {

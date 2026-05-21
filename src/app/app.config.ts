@@ -11,7 +11,6 @@ import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { counterReducer } from '../app/features/counter/store/counter.reducer';
 import { todoReducer } from '../app/features/todos/store/todo.reducer';
 import { authReducer } from './store/auth/auth.reducer';
 import { AuthEffects } from './store/auth/auth.effects';

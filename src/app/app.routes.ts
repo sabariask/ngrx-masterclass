@@ -1,6 +1,4 @@
 import { Routes } from '@angular/router';
-import { Dashboard } from './dashboard/dashboard';
-import { Counter } from '../app/features/counter/counter';
 import { authGuard } from './guards/auth-guard';
 import { redirectIfLoggedInGuard } from './guards/redirect-if-logged-in-guard';
 
@@ -24,6 +22,12 @@ export const routes: Routes = [
     path: 'todos',
     canActivate: [authGuard],
     loadChildren: () => import('../app/features/todos/todos.routes').then((m) => m.TODOS_ROUTES),
+  },
+  {
+    path: 'todo-signal',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/todos/todo-signal/todo-signal').then((m) => m.TodoSignal),
   },
   {
     path: 'counter',

@@ -1,5 +1,5 @@
 <nav class="navbar">
-  <div class="nav-brand">🚀 NgRx Masterclass</div>
+  <div class="nav-brand">🚀 NgRx</div>
   @if (isLoggedIn$ | async) {
     <ul class="nav-links">
       <li>
@@ -7,6 +7,9 @@
       </li>
       <li>
         <a [routerLink]="'/todos'" routerLinkActive="active"> 📝 Todos </a>
+      </li>
+      <li>
+        <a routerLink="/todo-signal" routerLinkActive="active"> ⚡ Signal Todos </a>
       </li>
       <li>
         <a [routerLink]="'/analytics'" routerLinkActive="active"> 📈 Analytics </a>

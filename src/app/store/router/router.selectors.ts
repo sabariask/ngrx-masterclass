@@ -9,7 +9,7 @@ export const selectCurrentRouterState = createSelector(selectRouterState, (route
 
 export const selectCurrentUrl = createSelector(
   selectCurrentRouterState,
-  (state) => state.url ?? '',
+  (state) => state?.url ?? '',
 );
 
 export const selectRouteParams = createSelector(
@@ -24,7 +24,7 @@ export const selectTodoIdFromRoute = createSelector(selectRouteParams, (params) 
 
 export const selectQueryParams = createSelector(
   selectCurrentRouterState,
-  (state) => state.queryParams ?? {},
+  (state) => state?.queryParams ?? {},
 );
 
 export const selectCurrentPage = createSelector(selectQueryParams, (params) =>
