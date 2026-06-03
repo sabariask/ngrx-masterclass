@@ -9,10 +9,6 @@ import { RouterStateUrl } from '../store/router/custom-route-serializer';
 export interface AppState {
   auth: AuthState;
   router: RouterReducerState<RouterStateUrl>;
-  ui: {
-    theme: 'light' | 'dark';
-    sudebarOpen: boolean;
-  };
   counter?: CounterState;
-  todos?: TodoState;
+  todos: TodoState;
 }

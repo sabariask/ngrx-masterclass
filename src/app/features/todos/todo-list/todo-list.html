@@ -10,6 +10,14 @@
         }
       }
     </button>
+    <div class="undo-redo">
+      <button type="button" class="btn-undo" (click)="undo()" title="Undo last action">
+        ↩️ Undo
+      </button>
+      <button type="button" class="btn-redo" (click)="redo()" title="Redo last action">
+        ↪️ Redo
+      </button>
+    </div>
   </div>
 
   @if (showFilters$ | async) {

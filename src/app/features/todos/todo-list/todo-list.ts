@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { TodoItem } from '../todo-item/todo-item';
 import { TodoPaginationStore } from '../store/todo-pagination.store';
 import { FilterState, TodoFilterStore } from '../store/todo-filter.store';
+import { RedoAction, UndoAction } from '../../../store/meta-reducer';
 
 @Component({
   selector: 'app-todo-list',
@@ -178,6 +179,14 @@ export class TodoList implements OnInit {
 
   onPrevPage() {
     this.paginationStore.prevPage();
+  }
+
+  undo(): void {
+    this.store.dispatch(UndoAction);
+  }
+
+  redo(): void {
+    this.store.dispatch(RedoAction);
   }
 
   clearFilters() {

@@ -273,3 +273,25 @@
   flex-direction: column;
   gap: 0.8rem;
 }
+
+.undo-redo {
+  display: flex;
+  gap: 0.5rem;
+
+  .btn-undo, .btn-redo {
+    background: white;
+    border: 1.5px solid #e0e0e0;
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      border-color: #1a1a2e;
+      background: #1a1a2e;
+      color: white;
+    }
+  }
+}

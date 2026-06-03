@@ -18,16 +18,22 @@ import { TodoEffects } from '../app/features/todos/store/todo.effects';
 import { errorInterceptor } from './interceptors/error.interceptor';
 import { provideRouterStore, routerReducer, RouterStateSerializer } from '@ngrx/router-store';
 import { CustomSerializer } from './store/router/custom-route-serializer';
+import { metaReducers } from './store/meta-reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes, withPreloading(PreloadAllModules)),
-    provideStore({
-      auth: authReducer,
-      router: routerReducer,
-      todos: todoReducer,
-    }),
+    provideStore(
+      {
+        auth: authReducer,
+        router: routerReducer,
+        todos: todoReducer,
+      },
+      {
+        metaReducers
+      },
+    ),
     provideRouterStore(),
     {
       provide: RouterStateSerializer,
@@ -40,9 +46,7 @@ export const appConfig: ApplicationConfig = {
       logOnly: !isDevMode(),
       autoPause: true,
       trace: false,
-      actionsBlocklist: [
-        '@ngrx/router-store/request',
-      ],
+      actionsBlocklist: ['@ngrx/router-store/request'],
     }),
     provideZoneChangeDetection({ eventCoalescing: true }),
   ],
