@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import * as CounterSelectors from '../../features/counter/store/counter.selectors';
@@ -12,6 +12,7 @@ import { AppState } from '../../state/app.state';
   imports: [CommonModule],
   templateUrl: './counter.html',
   styleUrl: './counter.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Counter {
   private store = inject(Store<AppState>);

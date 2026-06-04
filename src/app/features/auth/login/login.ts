@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthFacade } from '../../../store/auth/auth.facade';
@@ -9,6 +9,7 @@ import { AuthFacade } from '../../../store/auth/auth.facade';
   templateUrl: './login.html',
   styleUrl: './login.scss',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Login {
   email = '';

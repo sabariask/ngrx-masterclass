@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, signal } from '@angular/core';
 import { Todo } from '../../../models/todo.model';
 import { RouterLink } from '@angular/router';
 
@@ -9,6 +9,7 @@ import { RouterLink } from '@angular/router';
   standalone: true,
   templateUrl: './todo-item.html',
   styleUrl: './todo-item.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TodoItem {
   @Input() todo: Todo = {

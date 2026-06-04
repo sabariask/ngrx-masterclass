@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { User } from '../models/user.model';
 import { Todo } from '../models/todo.model';
 import { Observable, Subject, takeUntil } from 'rxjs';
@@ -17,6 +17,7 @@ import { AuthActions } from '../store/auth/auth.actions';
   imports: [CommonModule, RouterLink],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Dashboard implements  OnInit{
   store = inject(Store<AppState>);

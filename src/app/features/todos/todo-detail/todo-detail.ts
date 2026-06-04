@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { filter, Observable, switchMap } from 'rxjs';
 import { Todo } from '../../../models/todo.model';
 import { Store } from '@ngrx/store';
@@ -14,6 +14,7 @@ import { RouterLink } from "@angular/router";
   templateUrl: './todo-detail.html',
   styleUrl: './todo-detail.scss',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TodoDetail {
   todo$!: Observable<Todo | null>;

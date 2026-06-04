@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { distinctUntilChanged, Observable } from 'rxjs';
 import { selectAnalyticsViewModel } from '../store/analytics/analytics.selectors';
@@ -12,6 +12,7 @@ import { RouterLink } from "@angular/router";
   templateUrl: './analytics.html',
   styleUrl: './analytics.scss',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Analytics implements OnInit {
   vm$!: Observable<any>;

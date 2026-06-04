@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { Todo } from '../../../models/todo.model';
 import { FormsModule } from '@angular/forms';
@@ -15,6 +15,7 @@ import { TodoFacade } from '../todo.facade';
   templateUrl: './todo-list.html',
   styleUrl: './todo-list.scss',
   providers: [TodoPaginationStore, TodoFilterStore],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TodoList implements OnInit {
   newTitle = '';
@@ -26,7 +27,7 @@ export class TodoList implements OnInit {
   paginationStore = inject(TodoPaginationStore);
   filterStore = inject(TodoFilterStore);
 
-  allTodos$ = this.todoFacade.allTodos$;
+  allTodos$ = this.todoFacade.allTodos$.pipe(distinctUntilChanged());
 
   // Global Store
   loading$ = this.todoFacade.loading$;

@@ -54,14 +54,35 @@ export const selectMediumPriorityTodos = createSelector(selectAllTodos, (todos) 
   todos.filter((t) => t.priority === 'medium' && !t.completed),
 );
 
-export const selectTodosCount = createSelector(selectAllTodos, (todos) => ({
-  total: todos.length,
-  completed: todos.filter((t) => t.completed).length,
-  pending: todos.filter((t) => !t.completed).length,
-  high: todos.filter((t) => t.priority === 'high').length,
-  medium: todos.filter((t) => t.priority === 'medium').length,
-  low: todos.filter((t) => t.priority === 'low').length,
-}));
+export const selectTodosCount = createSelector(selectAllTodos, (todos) => {
+  let completed = 0,
+    high = 0,
+    medium = 0,
+    low = 0;
+  for (const todo of todos) {
+    if (todo.completed) completed++;
+    switch (todo.priority) {
+      case 'high':
+        high++;
+        break;
+      case 'medium':
+        medium++;
+        break;
+      case 'low':
+        low++;
+        break;
+    }
+  }
+
+  return {
+    total: todos.length,
+    completed,
+    pending: todos.length - completed,
+    high,
+    medium,
+    low,
+  };
+});
 
 export const selectCompletionRate = createSelector(selectAllTodos, (todos): number => {
   const done = todos.filter((t) => t.completed).length;
