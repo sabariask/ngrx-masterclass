@@ -2,15 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { Todo } from '../../../models/todo.model';
-import { AppState } from '../../../state/app.state';
-import { Store } from '@ngrx/store';
-import * as TodoSelectors from '../../../features/todos/store/todo.selectors';
-import { TodoActions } from '../../../features/todos//store/todo.actions';
 import { FormsModule } from '@angular/forms';
 import { TodoItem } from '../todo-item/todo-item';
 import { TodoPaginationStore } from '../store/todo-pagination.store';
 import { FilterState, TodoFilterStore } from '../store/todo-filter.store';
-import { RedoAction, UndoAction } from '../../../store/meta-reducer';
+import { TodoFacade } from '../todo.facade';
 
 @Component({
   selector: 'app-todo-list',
@@ -25,17 +21,17 @@ export class TodoList implements OnInit {
   newPriority: 'low' | 'medium' | 'high' = 'medium';
   newDescription = '';
 
-  store = inject(Store<AppState>);
+  todoFacade = inject(TodoFacade);
 
   paginationStore = inject(TodoPaginationStore);
   filterStore = inject(TodoFilterStore);
 
-  allTodos$ = this.store.select(TodoSelectors.selectAllTodos);
+  allTodos$ = this.todoFacade.allTodos$;
 
   // Global Store
-  loading$ = this.store.select(TodoSelectors.selectTodosLoading);
-  counts$ = this.store.select(TodoSelectors.selectTodosCount);
-  error$ = this.store.select(TodoSelectors.selectTodosError);
+  loading$ = this.todoFacade.loading$;
+  counts$ = this.todoFacade.counts$;
+  error$ = this.todoFacade.error$;
 
   filterState$ = this.filterStore.filterState$;
   showFilters$ = this.filterStore.showFilters$;
@@ -47,20 +43,16 @@ export class TodoList implements OnInit {
 
   filteredPaginatedTodos$!: Observable<any>;
 
-  completionRate$ = this.store
-    .select(TodoSelectors.selectCompletionRate)
-    .pipe(distinctUntilChanged());
+  completionRate$ = this.todoFacade.completionRate$.pipe(distinctUntilChanged());
 
-  checkCounts$ = this.store
-    .select(TodoSelectors.selectTodosCount)
-    .pipe(
-      distinctUntilChanged(
-        (prev, curr) =>
-          prev.total === curr.total &&
-          prev.completed === curr.completed &&
-          prev.pending === curr.pending,
-      ),
-    );
+  checkCounts$ = this.todoFacade.counts$.pipe(
+    distinctUntilChanged(
+      (prev, curr) =>
+        prev.total === curr.total &&
+        prev.completed === curr.completed &&
+        prev.pending === curr.pending,
+    ),
+  );
 
   constructor() {
     this.filteredPaginatedTodos$ = combineLatest([
@@ -105,19 +97,13 @@ export class TodoList implements OnInit {
   }
 
   ngOnInit(): void {
-    this.store.dispatch(TodoActions.loadTodos());
+    this.todoFacade.loadTodos();
   }
 
   addTodo(): void {
     if (!this.newTitle.trim()) return;
 
-    this.store.dispatch(
-      TodoActions.addTodo({
-        title: this.newTitle.trim(),
-        priority: this.newPriority,
-        description: this.newDescription,
-      }),
-    );
+    this.todoFacade.addTodos(this.newTitle.trim(), this.newPriority, this.newDescription);
 
     this.newTitle = '';
     this.newPriority = 'medium';
@@ -125,28 +111,23 @@ export class TodoList implements OnInit {
   }
 
   updateTodoTitle(event: { id: number; title: string }) {
-    this.store.dispatch(
-      TodoActions.updateTodoTitle({
-        id: event.id,
-        title: event.title,
-      }),
-    );
+    this.todoFacade.updateTodoTitle(event.id, event.title);
   }
 
   toggleTodo(todo: Todo): void {
-    this.store.dispatch(TodoActions.toggleTodo({ id: todo.id, completed: todo.completed }));
+    this.todoFacade.toggleTodo(todo);
   }
 
   deleteTodo(id: number): void {
-    this.store.dispatch(TodoActions.deleteTodo({ id }));
+    this.todoFacade.deleteTodo(id);
   }
 
   clearAll(): void {
-    this.store.dispatch(TodoActions.clearAllTodos());
+    this.todoFacade.clearAllTodos();
   }
 
   setFilter(filter: 'all' | 'pending' | 'high' | 'completed'): void {
-    this.store.dispatch(TodoActions.setFilter({ filter }));
+    this.todoFacade.setFilter(filter);
   }
 
   trackByTodoId(index: number, toto: Todo) {
@@ -182,11 +163,11 @@ export class TodoList implements OnInit {
   }
 
   undo(): void {
-    this.store.dispatch(UndoAction);
+    this.todoFacade.undo();
   }
 
   redo(): void {
-    this.store.dispatch(RedoAction);
+    this.todoFacade.redo();
   }
 
   clearFilters() {

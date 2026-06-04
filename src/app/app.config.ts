@@ -3,6 +3,7 @@ import {
   provideBrowserGlobalErrorListeners,
   isDevMode,
   provideZoneChangeDetection,
+  inject,
 } from '@angular/core';
 import { PreloadAllModules, provideRouter, withPreloading } from '@angular/router';
 
@@ -18,7 +19,12 @@ import { TodoEffects } from '../app/features/todos/store/todo.effects';
 import { errorInterceptor } from './interceptors/error.interceptor';
 import { provideRouterStore, routerReducer, RouterStateSerializer } from '@ngrx/router-store';
 import { CustomSerializer } from './store/router/custom-route-serializer';
-import { metaReducers } from './store/meta-reducer';
+import {
+  clearStateMetaReducer,
+  createHydrationReducer,
+  loggerMetaReducer,
+} from './store/meta-reducer';
+import { HydrationService } from './store/hydration.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -31,7 +37,14 @@ export const appConfig: ApplicationConfig = {
         todos: todoReducer,
       },
       {
-        metaReducers
+        metaReducers: [
+          clearStateMetaReducer,
+          ...(isDevMode() ? [loggerMetaReducer] : []),
+          (reducer: any) => {
+            const hydrationService = inject(HydrationService);
+            return createHydrationReducer(hydrationService)(reducer);
+          },
+        ],
       },
     ),
     provideRouterStore(),

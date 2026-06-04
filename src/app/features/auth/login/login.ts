@@ -1,8 +1,7 @@
 import { Component, inject } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { AuthActions } from '../../../store/auth/auth.actions';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AuthFacade } from '../../../store/auth/auth.facade';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +15,7 @@ export class Login {
   password = '';
   errorMessage = '';
 
-  store = inject(Store);
+  authFacade = inject(AuthFacade);
 
   login() {
     if (!this.email || !this.password) {
@@ -25,20 +24,10 @@ export class Login {
     }
 
     this.errorMessage = '';
-    this.store.dispatch(
-      AuthActions.login({
-        email: this.email,
-        password: this.password,
-      }),
-    );
+    this.authFacade.login(this.email, this.password);
   }
 
   quickLogin() {
-    this.store.dispatch(
-      AuthActions.login({
-        email: 'sana@example.com',
-        password: 'password@123',
-      }),
-    );
+    this.authFacade.login('sana@example.com', 'password@123');
   }
 }

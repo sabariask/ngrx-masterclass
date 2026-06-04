@@ -1,7 +1,8 @@
 import { ActionReducer, MetaReducer } from '@ngrx/store';
 import { AppState } from '../state/app.state';
 import { AuthActions } from './auth/auth.actions';
-import { isDevMode } from '@angular/core';
+import { inject, isDevMode } from '@angular/core';
+import { HydrationService } from './hydration.service';
 
 interface HistoryState<T> {
   past: T[];
@@ -88,11 +89,45 @@ export function hydrationMetaReducer(reducer: ActionReducer<AppState>): ActionRe
   };
 }
 
+export function createHydrationReducer(hydrationService: HydrationService) {
+  return (reducer: ActionReducer<AppState>): ActionReducer<AppState> => {
+    return (state, action) => {
+      if (action.type === '@ngrx/store/init') {
+        const savedState = hydrationService.loadState();
+        if (savedState) {
+          console.log('Hydrating state...');
+          try {
+            return reducer(savedState as AppState, action);
+          } catch {
+            console.log('Hydration failed using initial state');
+            hydrationService.clearState();
+          }
+        }
+      }
+      const newState = reducer(state, action);
+      const persistedActions = [
+        '[Todos] Load Todos Success',
+        '[Todos] Add Todo Success',
+        '[Todos] Delete Todo Success',
+        '[Todos] Toggle Todo Success',
+        '[Todos] Update Todo Title Success',
+        '[Todos] Set Filter',
+        '[Counter] Increment',
+        '[Counter] Decrement',
+        '[Counter] Reset',
+      ];
+      if (persistedActions.includes(action.type)) {
+        hydrationService.saveState(newState);
+      }
+      return newState;
+    };
+  };
+}
+
 export function clearStateMetaReducer(reducer: ActionReducer<AppState>): ActionReducer<AppState> {
   return (state, action) => {
     if (action.type === AuthActions.logoutSuccess.type) {
       console.log('Clearing state on logout');
-      localStorage.removeItem('ngrx_state');
       return reducer(undefined, action);
     }
     return reducer(state, action);
@@ -172,6 +207,15 @@ export function undoRedoMetaReducer(reducer: ActionReducer<AppState>): ActionRed
   };
 }
 
-export const metaReducers: MetaReducer<AppState>[] = !isDevMode()
-  ? [clearStateMetaReducer, hydrationMetaReducer]
-  : [loggerMetaReducer, clearStateMetaReducer, hydrationMetaReducer, undoRedoMetaReducer];
+// export const metaReducers: MetaReducer<AppState>[] = !isDevMode()
+//   ? [clearStateMetaReducer, hydrationMetaReducer]
+//   : [loggerMetaReducer, clearStateMetaReducer, hydrationMetaReducer, undoRedoMetaReducer];
+
+export function provideMetaReducers(): MetaReducer<AppState>[] {
+  const hydrationService = inject(HydrationService);
+  const hydrationMR = createHydrationReducer(hydrationService);
+
+  return !isDevMode()
+    ? [clearStateMetaReducer, hydrationMR]
+    : [loggerMetaReducer, clearStateMetaReducer, hydrationMR];
+}
