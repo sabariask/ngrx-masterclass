@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AppState } from '../state/app.state';
+import { AppState } from './app.state';
 
 @Injectable({ providedIn: 'root' })
 export class HydrationService {

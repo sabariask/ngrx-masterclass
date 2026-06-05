@@ -1,5 +1,5 @@
 import { ActionReducer, MetaReducer } from '@ngrx/store';
-import { AppState } from '../state/app.state';
+import { AppState } from './app.state';
 import { AuthActions } from './auth/auth.actions';
 import { inject, isDevMode } from '@angular/core';
 import { HydrationService } from './hydration.service';

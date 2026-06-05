@@ -7,17 +7,18 @@ import { Todo } from '../models/todo.model';
 export class TodoService {
   private apiUrl = 'http://localhost:3000/todos';
   private http = inject(HttpClient);
+  private readonly TIMEOUT = 5000;
 
   getMockTodos(): Observable<Todo[]> {
-    return this.http.get<Todo[]>(`${this.apiUrl}`).pipe(timeout(5000), retry(2));
+    return this.http.get<Todo[]>(`${this.apiUrl}`).pipe(timeout(this.TIMEOUT), retry(2));
   }
 
   getAllTodos(): Observable<Todo[]> {
-    return this.http.get<Todo[]>(`${this.apiUrl}`).pipe(timeout(5000), retry(2));
+    return this.http.get<Todo[]>(`${this.apiUrl}`).pipe(timeout(this.TIMEOUT), retry(2));
   }
 
   getTodoById(id: number = 1): Observable<Todo> {
-    return this.http.get<Todo>(`${this.apiUrl}/${id}`).pipe(timeout(5000));
+    return this.http.get<Todo>(`${this.apiUrl}/${id}`).pipe(timeout(this.TIMEOUT));
   }
 
   addTodo(todo: Omit<Todo, 'id' | 'createdAt'>): Observable<Todo> {
@@ -26,7 +27,7 @@ export class TodoService {
       id: Math.floor(Math.random() * 10000),
       createdAt: new Date().toISOString(),
     };
-    return this.http.post<Todo>(this.apiUrl, newTodo).pipe(timeout(5000));
+    return this.http.post<Todo>(this.apiUrl, newTodo).pipe(timeout(this.TIMEOUT));
   }
 
   toggleTodo(id: number, newCompleted: boolean): Observable<{ id: number; completed: boolean }> {
@@ -38,7 +39,7 @@ export class TodoService {
         }),
       ),
       map((updated) => ({ id: updated.id, completed: updated.completed })),
-      timeout(5000),
+      timeout(this.TIMEOUT),
     );
   }
 
@@ -50,14 +51,14 @@ export class TodoService {
           title,
         }),
       ),
-      timeout(5000),
+      timeout(this.TIMEOUT),
     );
   }
 
   deleteTodo(id: number): Observable<number> {
     return this.http.delete(`${this.apiUrl}/${id}`).pipe(
       map(() => id),
-      timeout(5000),
+      timeout(this.TIMEOUT),
     );
   }
 

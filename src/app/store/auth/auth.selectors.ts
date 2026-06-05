@@ -29,3 +29,18 @@ export const selectAuthInitialized = createSelector(
   selectAuthState,
   (state) => state?.initialized ?? false,
 );
+
+export const selectRefreshToken = createSelector(
+  selectAuthState,
+  s => s.refreshToken
+);
+
+export const selectTokenExpiry = createSelector(
+  selectAuthState,
+  s => s.tokenExpiry
+);
+
+export const selectIsRefreshing = createSelector(
+  selectAuthState,
+  s => s.isRefreshing
+);

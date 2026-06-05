@@ -5,7 +5,12 @@ import {
   provideZoneChangeDetection,
   inject,
 } from '@angular/core';
-import { PreloadAllModules, provideRouter, withPreloading } from '@angular/router';
+import {
+  PreloadAllModules,
+  provideRouter,
+  withComponentInputBinding,
+  withPreloading,
+} from '@angular/router';
 
 import { routes } from './app.routes';
 import { provideStore } from '@ngrx/store';
@@ -25,11 +30,12 @@ import {
   loggerMetaReducer,
 } from './store/meta-reducer';
 import { HydrationService } from './store/hydration.service';
+import { authInterceptor } from './interceptors/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideRouter(routes, withPreloading(PreloadAllModules)),
+    provideRouter(routes, withPreloading(PreloadAllModules), withComponentInputBinding()),
     provideStore(
       {
         auth: authReducer,
@@ -45,6 +51,12 @@ export const appConfig: ApplicationConfig = {
             return createHydrationReducer(hydrationService)(reducer);
           },
         ],
+        runtimeChecks: {
+          strictActionImmutability: true,
+          strictStateImmutability: true,
+          strictStateSerializability: true,
+          strictActionSerializability: true,
+        },
       },
     ),
     provideRouterStore(),
@@ -52,7 +64,7 @@ export const appConfig: ApplicationConfig = {
       provide: RouterStateSerializer,
       useClass: CustomSerializer,
     },
-    provideHttpClient(withInterceptors([errorInterceptor])),
+    provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),
     provideEffects([AuthEffects, TodoEffects]),
     provideStoreDevtools({
       maxAge: 25,

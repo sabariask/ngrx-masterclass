@@ -7,8 +7,8 @@ import { TodoService } from '../services/todo.service';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { AppState } from '../state/app.state';
-import * as dashboardSelectors from '../state/dashboard/dashboard.selectors';
+import { AppState } from '../store/app.state';
+import * as dashboardSelectors from '../store/dashboard.selectors';
 import { TodoActions } from '../../app/features/todos/store/todo.actions';
 import { AuthActions } from '../store/auth/auth.actions';
 

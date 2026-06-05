@@ -7,6 +7,9 @@ export interface AuthState {
   loading: boolean;
   error: string | null;
   initialized: boolean;
+  refreshToken: string | null;
+  tokenExpiry: number | null;
+  isRefreshing: boolean;
 }
 
 export const initialAuthState: AuthState = {
@@ -16,6 +19,9 @@ export const initialAuthState: AuthState = {
   loading: true,
   error: null,
   initialized: false,
+  isRefreshing: false,
+  tokenExpiry: null,
+  refreshToken: null
 };
 
 export const clearAuthState = {
@@ -25,4 +31,7 @@ export const clearAuthState = {
   loading: false,
   error: null,
   initialized: true,
+  isRefreshing: false,
+  tokenExpiry: null,
+  refreshToken: null
 };

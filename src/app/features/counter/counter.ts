@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import * as CounterSelectors from '../../features/counter/store/counter.selectors';
 import * as CounterActions from '../../features/counter/store/counter.actions';
-import { AppState } from '../../state/app.state';
+import { AppState } from '../../store/app.state';
 
 @Component({
   selector: 'app-counter',
