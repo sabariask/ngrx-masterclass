@@ -147,6 +147,26 @@
       "createdAt": "2026-06-06",
       "updatedAt": "2026-06-06",
       "id": 5
+    },
+    {
+      "title": "Personal note for testing",
+      "category": "personal",
+      "content": "Created new notes for personal",
+      "userId": 1,
+      "isPinned": false,
+      "createdAt": "2026-06-06",
+      "updatedAt": "2026-06-06",
+      "id": 6
+    },
+    {
+      "title": "Test other notes",
+      "category": "other",
+      "content": "testing other notes using dropdown",
+      "userId": 1,
+      "isPinned": false,
+      "createdAt": "2026-06-06",
+      "updatedAt": "2026-06-06",
+      "id": 7
     }
   ]
 }

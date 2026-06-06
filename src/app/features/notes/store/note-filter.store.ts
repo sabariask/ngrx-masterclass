@@ -4,14 +4,12 @@ import { ComponentStore } from '@ngrx/component-store';
 
 export interface NoteFilterState {
   searchText: string;
-  category: 'all' | Note['category'];
-  showPinned: boolean;
+  activeFilter: 'all' | 'pinned' | Note['category'];
 }
 
 const initialState: NoteFilterState = {
   searchText: '',
-  category: 'all',
-  showPinned: false,
+  activeFilter: 'all',
 };
 
 @Injectable()
@@ -21,42 +19,35 @@ export class NoteFilterStore extends ComponentStore<NoteFilterState> {
   }
 
   readonly searchText$ = this.select((s) => s.searchText);
-  readonly category$ = this.select((s) => s.category);
-  readonly showPinned$ = this.select((s) => s.showPinned);
+  readonly activeFilter$ = this.select((s) => s.activeFilter);
 
   readonly filterState$ = this.select(
     this.searchText$,
-    this.category$,
-    this.showPinned$,
-    (searchText, category, showPinned) => ({
+    this.activeFilter$,
+    (searchText, activeFilter) => ({
       searchText,
-      category,
-      showPinned,
+      activeFilter,
     }),
   );
 
   readonly activeFilterCount$ = this.select(
     this.searchText$,
-    this.category$,
-    this.showPinned$,
-    (text, cat, pinned) => {
+    this.activeFilter$,
+    (text, activeFilter) => {
       let count = 0;
       if (text) count++;
-      if (cat !== 'all') count++;
-      if (pinned) count++;
+      if (activeFilter !== 'all') count++;
       return count;
     },
   );
 
   readonly setSearchText = this.updater((state, searchText: string) => ({ ...state, searchText }));
-  readonly setCategory = this.updater((state, category: NoteFilterState['category']) => ({
-    ...state,
-    category,
-  }));
-  readonly toggleShowPinned = this.updater((state) => ({
-    ...state,
-    showPinned: !state.showPinned,
-  }));
+  readonly setActiveFilter = this.updater(
+    (state, activeFilter: NoteFilterState['activeFilter']) => ({
+      ...state,
+      activeFilter: state.activeFilter === activeFilter ? 'all' : activeFilter,
+    }),
+  );
 
   readonly clearFilters = this.updater(() => ({ ...initialState }));
 }

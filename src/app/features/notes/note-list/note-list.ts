@@ -5,7 +5,7 @@ import { NoteFilterStore } from '../store/note-filter.store';
 import { CreateNoteDTO, Note } from '../store/note.model';
 import { combineLatest, map, Observable } from 'rxjs';
 import { FormsModule } from '@angular/forms';
-import { NoteCard } from "../note-card/note-card";
+import { NoteCard } from '../note-card/note-card';
 
 @Component({
   selector: 'app-note-list',
@@ -14,7 +14,7 @@ import { NoteCard } from "../note-card/note-card";
   styleUrl: './note-list.scss',
   standalone: true,
   providers: [NoteFilterStore, NoteFacade],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NoteList implements OnInit {
   noteFacade = inject(NoteFacade);
@@ -37,12 +37,14 @@ export class NoteList implements OnInit {
     map(([notes, filters]) => {
       let result = notes;
 
-      if (filters.showPinned) {
-        result = result.filter((n) => n.isPinned);
-      }
-
-      if (filters.category !== 'all') {
-        result = result.filter((n) => n.category === filters.category);
+      switch (filters.activeFilter) {
+        case 'pinned':
+          result = result.filter((n) => n.isPinned);
+          break;
+        case 'all':
+          break;
+        default:
+          result = result.filter((n) => n.category === filters.activeFilter);
       }
 
       if (filters.searchText) {
@@ -90,10 +92,6 @@ export class NoteList implements OnInit {
 
   onSearch(text: string) {
     this.filterStore.setSearchText(text);
-  }
-
-  onCategory(cat: Note['category']) {
-    this.filterStore.setCategory(cat);
   }
 
   trackById(_: number, note: Note) {

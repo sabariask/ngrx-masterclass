@@ -30,12 +30,21 @@
 
   @if (counts$ | async; as counts) {
     <div class="stats-row">
-      <div class="stat-chip total">📓 {{ counts.total }} Total</div>
-      <div class="stat-chip pinned" (click)="filterStore.toggleShowPinned()">
+      <div class="stat-chip total" (click)="filterStore.clearFilters()">
+        📓 {{ counts.total }} Total
+      </div>
+      <div class="stat-chip pinned" (click)="filterStore.setActiveFilter('pinned')">
         📌 {{ counts.pinned }} Pinned
       </div>
-      <div class="stat-chip work">💼 {{ counts.work }} Work</div>
-      <div class="stat-chip learning">📚 {{ counts.learning }} Learning</div>
+      <div class="stat-chip personal" (click)="filterStore.setActiveFilter('personal')">
+        🏠 {{ counts.personal }} Personal
+      </div>
+      <div class="stat-chip work" (click)="filterStore.setActiveFilter('work')">
+        💼 {{ counts.work }} Work
+      </div>
+      <div class="stat-chip learning" (click)="filterStore.setActiveFilter('learning')">
+        📚 {{ counts.learning }} Learning
+      </div>
     </div>
   }
 
@@ -46,7 +55,11 @@
       class="search-input"
       (input)="onSearch($any($event.target).value)"
     />
-    <select (change)="onCategory($any($event.target).value)" class="category-select">
+    <select
+      [value]="filterStore.activeFilter$ | async"
+      (change)="filterStore.setActiveFilter($any($event.target).value)"
+      class="category-select"
+    >
       <option value="all">All Categories</option>
       <option value="personal">🏠 Personal</option>
       <option value="work">💼 Work</option>
