@@ -12,7 +12,7 @@
     },
     {
       "id": 2,
-      "title": "Build Counter App",
+      "title": "Build Counter Application",
       "description": "Practice with BehaviorSubject",
       "completed": true,
       "priority": "medium",
@@ -22,9 +22,9 @@
     },
     {
       "id": 3,
-      "title": "Master RxJS Operators",
+      "title": "Master RxJS Opera",
       "description": "switchMap, mergeMap, catchError",
-      "completed": false,
+      "completed": true,
       "priority": "high",
       "userId": 1,
       "createdAt": "2024-01-13",
@@ -34,7 +34,7 @@
       "id": 4,
       "title": "Setup NgRx Effects",
       "description": "Wire HTTP calls through effects",
-      "completed": false,
+      "completed": true,
       "priority": "medium",
       "userId": 1,
       "createdAt": "2024-01-12",
@@ -42,7 +42,7 @@
     },
     {
       "id": 5,
-      "title": "Learn NgRx Entity",
+      "title": "Learn NgRx Ent",
       "description": "EntityAdapter, normalized state",
       "completed": true,
       "priority": "high",
@@ -54,7 +54,7 @@
       "id": 6,
       "title": "Router Store Setup",
       "description": "Custom serializer for route params",
-      "completed": false,
+      "completed": true,
       "priority": "medium",
       "userId": 1,
       "createdAt": "2024-01-10",
@@ -64,21 +64,37 @@
       "id": 7,
       "title": "ComponentStore Practice",
       "description": "Pagination and filter with ComponentStore",
-      "completed": false,
+      "completed": true,
       "priority": "low",
       "userId": 1,
       "createdAt": "2024-01-09",
       "dueDate": "2024-01-20"
     },
     {
-      "id": 8,
-      "title": "NgRx DevTools Mastery",
-      "description": "Time travel, action skip, state export",
-      "completed": false,
-      "priority": "low",
+      "title": "testing new task",
+      "priority": "high",
+      "completed": true,
       "userId": 1,
-      "createdAt": "2024-01-08",
-      "dueDate": null
+      "id": 305,
+      "createdAt": "2026-06-04T14:42:16.998Z"
+    },
+    {
+      "title": "create new page",
+      "priority": "high",
+      "description": "test it",
+      "completed": true,
+      "userId": 1,
+      "id": 3285,
+      "createdAt": "2026-06-05T07:12:49.221Z"
+    },
+    {
+      "title": "add style for new page",
+      "priority": "medium",
+      "description": "use scss format",
+      "completed": false,
+      "userId": 1,
+      "id": 5835,
+      "createdAt": "2026-06-05T07:13:35.198Z"
     }
   ],
   "users": [
@@ -89,6 +105,48 @@
       "role": "admin",
       "avatarUrl": "https://i.pravatar.cc/100?img=5",
       "createdAt": "2024-01-01"
+    }
+  ],
+  "notes": [
+    {
+      "id": 1,
+      "title": "NgRx Learnings",
+      "content": "Actions, Reducers, Effects, Selectors",
+      "category": "learning",
+      "isPinned": true,
+      "userId": 1,
+      "createdAt": "2024-01-15",
+      "updatedAt": "2026-06-06"
+    },
+    {
+      "id": 3,
+      "title": "Work Meeting Notes",
+      "content": "Discuss Q1 targets, review performance",
+      "category": "work",
+      "isPinned": false,
+      "userId": 1,
+      "createdAt": "2024-01-13",
+      "updatedAt": "2024-01-13"
+    },
+    {
+      "id": 4,
+      "title": "Angular Interview Prep",
+      "content": "OnPush, Signals, NgRx patterns",
+      "category": "learning",
+      "isPinned": false,
+      "userId": 1,
+      "createdAt": "2024-01-12",
+      "updatedAt": "2026-06-06"
+    },
+    {
+      "title": "test note",
+      "category": "work",
+      "content": "test content",
+      "userId": 1,
+      "isPinned": true,
+      "createdAt": "2026-06-06",
+      "updatedAt": "2026-06-06",
+      "id": 5
     }
   ]
 }

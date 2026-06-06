@@ -1,0 +1,72 @@
+<div
+  class="note-card"
+  [class.pinned]="note.isPinned"
+  [class.category-work]="note.category === 'work'"
+  [class.category-learning]="note.category === 'learning'"
+  [class.category-personal]="note.category === 'personal'"
+>
+  <div class="card-header">
+    <span class="category-icon">
+      {{ categoryIcons[note.category] }}
+    </span>
+    @if (note.isPinned) {
+      <span class="pin-badge">📌 Pinned</span>
+    }
+    <div class="card-actions">
+      <button
+        class="btn-icon"
+        [class.pinned]="note.isPinned"
+        (click)="pin(); $event.stopPropagation()"
+        [title]="note.isPinned ? 'Unpin' : 'Pin'"
+      >
+        📌
+      </button>
+      <button
+        type="button"
+        class="btn-icon"
+        (click)="startEdit(); $event.stopPropagation()"
+        title="Edit"
+      >
+        ✏️
+      </button>
+      <button
+        type="button"
+        class="btn-icon delete"
+        (click)="delete(); $event.stopPropagation()"
+        title="Delete"
+      >
+        🗑️
+      </button>
+    </div>
+  </div>
+
+  @if (!isEditing()) {
+    <h4 class="note-title">{{ note.title }}</h4>
+    <p class="note-content">{{ note.content }}</p>
+    <p class="note-footer">
+      <small class="note-date">{{ note.updatedAt }}</small>
+    </p>
+  }
+
+  @if (isEditing()) {
+    <div class="edit-form">
+      <input
+        type="text"
+        class="edit-input"
+        [value]="editTitle()"
+        (input)="editTitle.set($any($event.target).value)"
+        (keyup.escape)="cancelEdit()"
+      />
+      <textarea
+        [value]="editContent()"
+        (input)="editContent.set($any($event.target).value)"
+        class="edit-textarea"
+        (keyup.escape)="cancelEdit()"
+      ></textarea>
+      <div class="edit-actions">
+        <button class="btn-save" type="button" (click)="saveEdit()">✅ Save</button>
+        <button type="button" class="btn-cancel" (click)="cancelEdit()">✕ Cancel</button>
+      </div>
+    </div>
+  }
+</div>

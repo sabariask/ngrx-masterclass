@@ -40,6 +40,11 @@ export const routes: Routes = [
     loadComponent: () => import('./analytics/analytics').then((m) => m.Analytics),
   },
   {
+    path: 'notes',
+    canActivate: [authGuard],
+    loadChildren: () => import('../app/features/notes/note.routes').then((m) => m.NOTES_ROUTES),
+  },
+  {
     path: '**',
     redirectTo: 'dashboard',
   },

@@ -1,0 +1,89 @@
+<div class="notes-page">
+  <div class="page-header">
+    <h2>📓 My Notes</h2>
+    <button class="btn-add-note" type="button" (click)="showAddForm = !showAddForm">
+      {{ showAddForm ? '✕ Cancel' : '+ New Note' }}
+    </button>
+  </div>
+
+  @if (showAddForm) {
+    <div class="add-form-card">
+      <h3>New Note</h3>
+      <input type="text" class="form-input" [(ngModel)]="newTitle" placeholder="Note title..." />
+      <textarea
+        class="form-textarea"
+        placeholder="Note content..."
+        [(ngModel)]="newContent"
+        rows="4"
+      ></textarea>
+      <div class="form-footer">
+        <select [(ngModel)]="newCategory" class="form-select">
+          <option value="personal">🏠 Personal</option>
+          <option value="work">💼 Work</option>
+          <option value="learning">📚 Learning</option>
+          <option value="other">📌 Other</option>
+        </select>
+        <button class="btn-save" type="button" (click)="addNote()">Save Note</button>
+      </div>
+    </div>
+  }
+
+  @if (counts$ | async; as counts) {
+    <div class="stats-row">
+      <div class="stat-chip total">📓 {{ counts.total }} Total</div>
+      <div class="stat-chip pinned" (click)="filterStore.toggleShowPinned()">
+        📌 {{ counts.pinned }} Pinned
+      </div>
+      <div class="stat-chip work">💼 {{ counts.work }} Work</div>
+      <div class="stat-chip learning">📚 {{ counts.learning }} Learning</div>
+    </div>
+  }
+
+  <div class="filter-bar">
+    <input
+      type="text"
+      placeholder="Search notes..."
+      class="search-input"
+      (input)="onSearch($any($event.target).value)"
+    />
+    <select (change)="onCategory($any($event.target).value)" class="category-select">
+      <option value="all">All Categories</option>
+      <option value="personal">🏠 Personal</option>
+      <option value="work">💼 Work</option>
+      <option value="learning">📚 Learning</option>
+      <option value="other">📌 Other</option>
+    </select>
+    @if ((filterCount$ | async) ?? 0 > 0) {
+      <button class="btn-clear" (click)="filterStore.clearFilters()">✕ Clear</button>
+    }
+  </div>
+
+  @if (loading$ | async) {
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Loading notes...</p>
+    </div>
+  }
+
+  @if (error$ | async; as error) {
+    <div class="error-state">❌ {{ error }}</div>
+  }
+
+  @if (filteredNotes$ | async; as notes) {
+    @if (notes.length === 0 && !(loading$ | async)) {
+      <div class="empty-state">
+        <p>📭 No notes found!</p>
+      </div>
+    }
+    <div class="notes-grid">
+      @for (note of notes; track note.id) {
+        <app-note-card
+          [note]="note"
+          (onDelete)="deleteNote($event)"
+          (onPin)="pinNote($event.id, $event.isPinned)"
+          (onUpdate)="updateNote($event)"
+        />
+      }
+    </div>
+  }
+</div>
